@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\AndroidApp",
+    "\\AndroidApp\\app",
+    "\\AndroidApp\\app\\src",
+    "\\AndroidApp\\app\\src\\main",
+    "\\AndroidApp\\app\\src\\main\\java",
+    "\\AndroidApp\\app\\src\\main\\java\\com",
+    "\\AndroidApp\\app\\src\\main\\java\\com\\example",
+    "\\AndroidApp\\app\\src\\main\\java\\com\\example\\androidapp",
+    "\\MyAPI",
+    "\\MyAPI\\Controllers"
+  ],
+  "SelectedNode": "\\MyAPI\\Controllers\\AuthController.cs",
+  "PreviewInSolutionExplorer": false
+}
