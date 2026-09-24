@@ -31,15 +31,6 @@ namespace MyAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            // Kiểm tra username
-            var usernameExists = await _context.Users
-                .AnyAsync(u => u.Username == request.Username);
-
-            if (usernameExists)
-            {
-                return BadRequest("Username đã tồn tại.");
-            }
-
             // Kiểm tra email
             var emailExists = await _context.Users
                 .AnyAsync(u => u.Email == request.Email);
@@ -52,7 +43,6 @@ namespace MyAPI.Controllers
             // Tạo User
             var user = new User
             {
-                Username = request.Username,
                 Email = request.Email
             };
 
@@ -71,7 +61,6 @@ namespace MyAPI.Controllers
             {
                 message = "Đăng ký thành công.",
                 userId = user.Id,
-                username = user.Username,
                 email = user.Email
             });
         }

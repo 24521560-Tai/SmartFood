@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "788coTXKFrw=",
+  "dgSpecHash": "plTrnGqZSSE=",
   "success": true,
-  "projectFilePath": "D:\\BaiTap Android\\MyAPI\\MyAPI.csproj",
+  "projectFilePath": "D:\\SmartFood\\MyAPI\\MyAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\TRAN VAN TAI\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\TRAN VAN TAI\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

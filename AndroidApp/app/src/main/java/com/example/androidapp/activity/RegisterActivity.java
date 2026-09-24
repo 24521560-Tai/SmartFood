@@ -7,9 +7,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.androidapp.R;
-import com.example.androidapp.api.AuthApi;
 import com.example.androidapp.api.ApiClient;
+import com.example.androidapp.api.AuthApi;
 import com.example.androidapp.model.RegisterRequest;
 import com.example.androidapp.model.RegisterResponse;
 
@@ -19,7 +20,6 @@ import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText edtUsername;
     EditText edtEmail;
     EditText edtPassword;
 
@@ -33,7 +33,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_register);
 
-        edtUsername = findViewById(R.id.edtUsername);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
 
@@ -46,20 +45,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void register() {
 
-        String username =
-                edtUsername.getText().toString().trim();
-
         String email =
                 edtEmail.getText().toString().trim();
 
         String password =
                 edtPassword.getText().toString().trim();
-
-        if (username.isEmpty()) {
-            edtUsername.setError("Vui lòng nhập username");
-            edtUsername.requestFocus();
-            return;
-        }
 
         if (email.isEmpty()) {
             edtEmail.setError("Vui lòng nhập email");
@@ -75,7 +65,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         RegisterRequest request =
                 new RegisterRequest(
-                        username,
                         email,
                         password
                 );
@@ -99,13 +88,18 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT
                             ).show();
 
-                            // Đăng ký thành công
-                            // → quay về Login
+                            // Lấy ID của User vừa đăng ký
+                            int userId = data.getUserId();
+
+                            // Chuyển sang ProfileActivity
                             Intent intent =
                                     new Intent(
                                             RegisterActivity.this,
-                                            LoginActivity.class
+                                            SetupProfileActivity.class
                                     );
+
+                            // Gửi userId sang ProfileActivity
+                            intent.putExtra("userId", userId);
 
                             startActivity(intent);
 

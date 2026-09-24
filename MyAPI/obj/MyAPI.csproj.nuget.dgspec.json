@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\BaiTap Android\\MyAPI\\MyAPI.csproj": {}
+    "D:\\SmartFood\\MyAPI\\MyAPI.csproj": {}
   },
   "projects": {
-    "D:\\BaiTap Android\\MyAPI\\MyAPI.csproj": {
+    "D:\\SmartFood\\MyAPI\\MyAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\BaiTap Android\\MyAPI\\MyAPI.csproj",
+        "projectUniqueName": "D:\\SmartFood\\MyAPI\\MyAPI.csproj",
         "projectName": "MyAPI",
-        "projectPath": "D:\\BaiTap Android\\MyAPI\\MyAPI.csproj",
+        "projectPath": "D:\\SmartFood\\MyAPI\\MyAPI.csproj",
         "packagesPath": "C:\\Users\\TRAN VAN TAI\\.nuget\\packages\\",
-        "outputPath": "D:\\BaiTap Android\\MyAPI\\obj\\",
+        "outputPath": "D:\\SmartFood\\MyAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
