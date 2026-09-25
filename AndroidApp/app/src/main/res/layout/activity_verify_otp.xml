@@ -1,65 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="30dp"
-    android:background="@drawable/bg">
+    android:background="#FFFFFF">
 
-    <!-- Tiêu đề -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="XÁC NHẬN OTP"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:layout_marginBottom="20dp" />
-
-    <!-- Hướng dẫn -->
-    <TextView
+    <!-- ẢNH NỀN -->
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Nhập mã OTP đã được gửi đến email của bạn"
-        android:textSize="16sp"
-        android:textColor="#000000"
-        android:gravity="center"
-        android:layout_marginBottom="20dp" />
+        android:layout_height="match_parent"
+        android:src="@drawable/img"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null" />
 
-    <!-- OTP -->
-    <EditText
-        android:id="@+id/edtOtp"
+    <!-- NỘI DUNG CHÍNH -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nhập mã OTP"
-        android:inputType="number"
-        android:maxLength="6"
-        android:padding="12dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:layout_marginBottom="20dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
 
-    <!-- Xác nhận OTP -->
-    <Button
-        android:id="@+id/btnVerifyOtp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Xác nhận OTP" />
+        <!-- Logo -->
+        <ImageView
+            android:layout_width="184dp"
+            android:layout_height="83dp"
+            android:layout_marginTop="28dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logo"
+            android:contentDescription="Logo Smart Food" />
 
-    <!-- Quay lại -->
+        <!-- Tên ứng dụng -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Smart Food"
+            android:textColor="#2E7D32"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <!-- Slogan -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Quản lý thực phẩm thông minh"
+            android:textColor="#263238"
+            android:textSize="15sp" />
+
     <TextView
-        android:id="@+id/txtBackToForgot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Quay lại"
-        android:textSize="16sp"
-        android:textColor="#230C0C"
-        android:layout_marginTop="20dp"
-        android:clickable="true"
-        android:focusable="true" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="XÁC NHẬN OTP"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginBottom="20dp" />
 
-</LinearLayout>
+        <!-- Hướng dẫn -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nhập mã OTP đã được gửi đến email của bạn"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <!-- OTP -->
+        <EditText
+            android:id="@+id/edtOtp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập mã OTP"
+            android:inputType="number"
+            android:maxLength="6"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Xác nhận OTP -->
+        <Button
+            android:id="@+id/btnVerifyOtp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Xác nhận OTP" />
+
+        <!-- Quay lại -->
+        <TextView
+            android:id="@+id/txtBackToForgot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quay lại"
+            android:textSize="16sp"
+            android:textColor="#230C0C"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+</FrameLayout>

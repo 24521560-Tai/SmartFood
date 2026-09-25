@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using MyAPI.Database;
 using MyAPI.DTOs;
 using MyAPI.Model;
-using MyAPI.Model;
 using MailKit.Net.Smtp;
 using MimeKit;
 
@@ -62,6 +61,44 @@ namespace MyAPI.Controllers
                 message = "Đăng ký thành công.",
                 userId = user.Id,
                 email = user.Email
+            });
+        }
+
+        // UPDATE PROFILE
+        [HttpPut("profile/{userId}")]
+        public async Task<IActionResult> UpdateProfile(
+            int userId,
+            SetupProfileRequest request)
+        {
+            // Tìm user theo Id
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            // Không tìm thấy user
+            if (user == null)
+            {
+                return NotFound("Không tìm thấy tài khoản.");
+            }
+
+            // Kiểm tra tên hiển thị
+            if (string.IsNullOrWhiteSpace(request.Username))
+            {
+                return BadRequest("Tên hiển thị không được để trống.");
+            }
+
+            // Cập nhật thông tin profile
+            user.Username = request.Username;
+            user.Avatar = request.Avatar;
+
+            // Lưu database
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Thiết lập hồ sơ thành công.",
+                userId = user.Id,
+                username = user.Username,
+                avatar = user.Avatar
             });
         }
 

@@ -8,7 +8,6 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- ẢNH NỀN RAU CỦ -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +19,7 @@
     <!-- Nội dung chính -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="3333dp"
+        android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingStart="24dp"
@@ -28,10 +27,9 @@
 
         <!-- Logo -->
         <ImageView
-            android:layout_width="144dp"
-            android:layout_height="93dp"
+            android:layout_width="133dp"
+            android:layout_height="83dp"
             android:layout_marginTop="28dp"
-            android:contentDescription="Quả bơ"
             android:scaleType="fitCenter"
             android:src="@drawable/logo" />
 
@@ -71,7 +69,7 @@
                 android:layout_marginBottom="28dp"
                 android:text="ĐĂNG NHẬP"
                 android:textColor="#000000"
-                android:textSize="18sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <!-- Email -->
