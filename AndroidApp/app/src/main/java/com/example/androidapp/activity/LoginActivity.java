@@ -114,14 +114,12 @@ public class LoginActivity extends AppCompatActivity {
                     Intent intent =
                             new Intent(
                                     LoginActivity.this,
-                                    SetupProfileActivity.class
+                                    HomeActivity.class
                             );
 
-                    intent.putExtra("username", data.getUsername());
-                    intent.putExtra("email", data.getEmail());
+                    intent.putExtra("userId", data.getUserId());
 
                     startActivity(intent);
-
                     finish();
 
                 }

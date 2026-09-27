@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Nĩa -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M7,2V9C7,10.1 7.9,11 9,11V22H11V11C12.1,11 13,10.1 13,9V2H11V7H10V2H8V7H7V2Z" />
+
+    <!-- Dao -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M16,2C14.9,2 14,2.9 14,4V12C14,13.1 14.9,14 16,14V22H18V2H16Z" />
+
+</vector>
