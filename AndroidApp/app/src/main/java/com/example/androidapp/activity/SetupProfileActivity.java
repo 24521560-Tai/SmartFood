@@ -1,5 +1,6 @@
 package com.example.androidapp.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ public class SetupProfileActivity extends AppCompatActivity {
     // USER ID
     // =========================
 
-    private int userId;
+
 
 
     // =========================
@@ -87,19 +88,7 @@ public class SetupProfileActivity extends AppCompatActivity {
         // NHẬN USER ID
         // =========================
 
-        userId = getIntent().getIntExtra("userId", -1);
 
-        if (userId == -1) {
-
-            Toast.makeText(
-                    this,
-                    "Không tìm thấy thông tin tài khoản.",
-                    Toast.LENGTH_LONG
-            ).show();
-
-            finish();
-            return;
-        }
 
 
         // =========================
@@ -146,7 +135,7 @@ public class SetupProfileActivity extends AppCompatActivity {
         // API
         // =========================
 
-        authApi = ApiClient.getAuthApi();
+        authApi = ApiClient.getAuthApi(this);
 
 
         // =========================
@@ -367,7 +356,6 @@ public class SetupProfileActivity extends AppCompatActivity {
         // =========================
 
         authApi.updateProfile(
-                userId,
                 request
         ).enqueue(
                 new Callback<MessageResponse>() {
@@ -386,19 +374,14 @@ public class SetupProfileActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT
                             ).show();
 
+                            // Chuyển sang Home
+                            Intent intent = new Intent(
+                                    SetupProfileActivity.this,
+                                    HomeActivity.class
+                            );
 
-                            // TODO:
-                            // Chuyển sang màn hình chính
-                            //
-                            // Intent intent =
-                            //     new Intent(
-                            //         ProfileActivity.this,
-                            //         MainActivity.class
-                            //     );
-                            //
-                            // startActivity(intent);
-                            //
-                            // finish();
+                            startActivity(intent);
+                            finish();
 
                         } else {
 
@@ -407,28 +390,22 @@ public class SetupProfileActivity extends AppCompatActivity {
                             try {
 
                                 if (response.errorBody() != null) {
-
-                                    error =
-                                            response
-                                                    .errorBody()
-                                                    .string();
+                                    error = response.errorBody().string();
                                 }
 
                             } catch (Exception e) {
-
                                 error = e.getMessage();
                             }
 
-
                             Toast.makeText(
                                     SetupProfileActivity.this,
-                                    "Thiết lập hồ sơ thất bại\n"
-                                            + error,
+                                    "Thiết lập hồ sơ thất bại"
+                                            + "\nHTTP " + response.code()
+                                            + "\n" + error,
                                     Toast.LENGTH_LONG
                             ).show();
                         }
                     }
-
 
                     @Override
                     public void onFailure(

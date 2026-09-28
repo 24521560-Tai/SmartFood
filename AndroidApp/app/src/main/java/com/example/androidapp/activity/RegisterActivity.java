@@ -38,10 +38,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         btnRegister = findViewById(R.id.btnRegister);
 
-        authApi = ApiClient.getAuthApi();
+        authApi = ApiClient.getAuthApi(this);
 
         btnRegister.setOnClickListener(v -> register());
     }
+
 
     private void register() {
 
@@ -51,14 +52,32 @@ public class RegisterActivity extends AppCompatActivity {
         String password =
                 edtPassword.getText().toString().trim();
 
+        // Kiểm tra email
         if (email.isEmpty()) {
             edtEmail.setError("Vui lòng nhập email");
             edtEmail.requestFocus();
             return;
         }
 
+        if (!android.util.Patterns.EMAIL_ADDRESS
+                .matcher(email)
+                .matches()) {
+
+            edtEmail.setError("Email không đúng định dạng");
+            edtEmail.requestFocus();
+            return;
+        }
+
         if (password.isEmpty()) {
             edtPassword.setError("Vui lòng nhập mật khẩu");
+            edtPassword.requestFocus();
+            return;
+        }
+
+        if (password.length() < 8) {
+            edtPassword.setError(
+                    "Password phải có ít nhất 8 ký tự"
+            );
             edtPassword.requestFocus();
             return;
         }
@@ -79,8 +98,16 @@ public class RegisterActivity extends AppCompatActivity {
 
                         if (response.isSuccessful()) {
 
-                            RegisterResponse data =
-                                    response.body();
+                            RegisterResponse data = response.body();
+
+                            if (data == null) {
+                                Toast.makeText(
+                                        RegisterActivity.this,
+                                        "Server không trả về dữ liệu",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                                return;
+                            }
 
                             Toast.makeText(
                                     RegisterActivity.this,
@@ -88,18 +115,19 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT
                             ).show();
 
-                            // Lấy ID của User vừa đăng ký
-                            int userId = data.getUserId();
 
-                            // Chuyển sang ProfileActivity
+                            // Chuyển sang màn hình nhập OTP
                             Intent intent =
                                     new Intent(
                                             RegisterActivity.this,
-                                            SetupProfileActivity.class
+                                            VerifyOtpActivity.class
                                     );
 
-                            // Gửi userId sang ProfileActivity
-                            intent.putExtra("userId", userId);
+                            // VerifyOtp cần biết email nào đang xác thực
+                            intent.putExtra("email", email);
+
+                            // Cho VerifyOtp biết đây là OTP đăng ký
+                            intent.putExtra("purpose", "REGISTER");
 
                             startActivity(intent);
 
@@ -110,11 +138,14 @@ public class RegisterActivity extends AppCompatActivity {
                             String error = "";
 
                             try {
+
                                 if (response.errorBody() != null) {
                                     error =
                                             response.errorBody().string();
                                 }
+
                             } catch (Exception e) {
+
                                 error = e.getMessage();
                             }
 
@@ -125,6 +156,7 @@ public class RegisterActivity extends AppCompatActivity {
                             ).show();
                         }
                     }
+
 
                     @Override
                     public void onFailure(

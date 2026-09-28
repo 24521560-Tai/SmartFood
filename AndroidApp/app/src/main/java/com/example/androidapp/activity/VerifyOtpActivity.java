@@ -13,6 +13,8 @@ import com.example.androidapp.api.AuthApi;
 import com.example.androidapp.api.ApiClient;
 import com.example.androidapp.model.MessageResponse;
 import com.example.androidapp.model.VerifyOtpRequest;
+import com.example.androidapp.model.VerifyOtpResponse;
+import com.example.androidapp.utils.TokenManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +29,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
     AuthApi authApi;
 
     String email;
+    String purpose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +42,12 @@ public class VerifyOtpActivity extends AppCompatActivity {
         btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
         txtBackToForgot = findViewById(R.id.txtBackToForgot);
 
-        // Lấy email từ ForgotPasswordActivity
+        // Lấy dữ liệu từ Activity trước
         email = getIntent().getStringExtra("email");
+        purpose = getIntent().getStringExtra("purpose");
 
         // Lấy AuthApi
-        authApi = ApiClient.getAuthApi();
+        authApi = ApiClient.getAuthApi(this);
 
         // Xác nhận OTP
         btnVerifyOtp.setOnClickListener(v -> {
@@ -75,35 +79,81 @@ public class VerifyOtpActivity extends AppCompatActivity {
             }
 
             VerifyOtpRequest request =
-                    new VerifyOtpRequest(email, otp);
+                    new VerifyOtpRequest(
+                            email,
+                            otp,
+                            purpose
+                    );
 
             authApi.verifyOtp(request)
-                    .enqueue(new Callback<MessageResponse>() {
+                    .enqueue(new Callback<VerifyOtpResponse>() {
 
                         @Override
                         public void onResponse(
-                                Call<MessageResponse> call,
-                                Response<MessageResponse> response) {
+                                Call<VerifyOtpResponse> call,
+                                Response<VerifyOtpResponse> response) {
 
                             if (response.isSuccessful()) {
 
+                                VerifyOtpResponse data = response.body();
+
+                                if (data == null) {
+                                    Toast.makeText(
+                                            VerifyOtpActivity.this,
+                                            "Server không trả về dữ liệu",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+
+                                    return;
+                                }
+
                                 Toast.makeText(
                                         VerifyOtpActivity.this,
-                                        response.body().getMessage(),
+                                        data.getMessage(),
                                         Toast.LENGTH_SHORT
                                 ).show();
 
-                                // Chuyển sang màn hình đổi mật khẩu
-                                Intent intent = new Intent(
-                                        VerifyOtpActivity.this,
-                                        ResetPasswordActivity.class
-                                );
+                                // OTP ĐĂNG KÝ
+                                if ("REGISTER".equals(purpose)) {
 
-                                // Gửi email và OTP sang Activity tiếp theo
-                                intent.putExtra("email", email);
-                                intent.putExtra("otp", otp);
+                                    String token = data.getToken();
+                                    if (token == null || token.isEmpty()) {
 
-                                startActivity(intent);
+                                        Toast.makeText(
+                                                VerifyOtpActivity.this,
+                                                "Không nhận được token",
+                                                Toast.LENGTH_SHORT
+                                        ).show();
+
+                                        return;
+                                    }
+                                    TokenManager tokenManager =
+                                            new TokenManager(VerifyOtpActivity.this);
+
+                                    tokenManager.saveToken(token);
+                                    Intent intent = new Intent(
+                                            VerifyOtpActivity.this,
+                                            SetupProfileActivity.class
+                                    );
+
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+                                // OTP QUÊN MẬT KHẨU
+                                else if ("RESET_PASSWORD".equals(purpose)) {
+
+                                    Intent intent = new Intent(
+                                            VerifyOtpActivity.this,
+                                            ResetPasswordActivity.class
+                                    );
+
+                                    intent.putExtra("email", email);
+                                    intent.putExtra("otp", otp);
+
+                                    startActivity(intent);
+                                    finish();
+                                }
 
                             } else {
 
@@ -114,10 +164,9 @@ public class VerifyOtpActivity extends AppCompatActivity {
                                 ).show();
                             }
                         }
-
                         @Override
                         public void onFailure(
-                                Call<MessageResponse> call,
+                                Call<VerifyOtpResponse> call,
                                 Throwable t) {
 
                             Toast.makeText(

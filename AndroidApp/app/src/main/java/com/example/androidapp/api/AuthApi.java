@@ -9,6 +9,7 @@ import com.example.androidapp.model.VerifyOtpRequest;
 import com.example.androidapp.model.ResetPasswordRequest;
 import com.example.androidapp.model.MessageResponse;
 import com.example.androidapp.model.SetupProfileRequest;
+import com.example.androidapp.model.VerifyOtpResponse;
 
 
 import retrofit2.Call;
@@ -31,7 +32,7 @@ public interface AuthApi {
     );
 
     @POST("api/Auth/verify-otp")
-    Call<MessageResponse> verifyOtp(
+    Call<VerifyOtpResponse> verifyOtp(
             @Body VerifyOtpRequest request
     );
 
@@ -39,10 +40,8 @@ public interface AuthApi {
     Call<MessageResponse> resetPassword(
             @Body ResetPasswordRequest request
     );
-
-    @PUT("api/Auth/profile/{userId}")
+    @PUT("api/Auth/profile")
     Call<MessageResponse> updateProfile(
-            @Path("userId") int userId,
             @Body SetupProfileRequest request
     );
 }

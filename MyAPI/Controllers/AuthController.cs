@@ -6,6 +6,12 @@ using MyAPI.DTOs;
 using MyAPI.Model;
 using MailKit.Net.Smtp;
 using MimeKit;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace MyAPI.Controllers
 {
@@ -26,11 +32,60 @@ namespace MyAPI.Controllers
             _passwordHasher = new PasswordHasher<User>();
         }
 
+        private string GenerateJwtToken(User user)
+        {
+            var jwtSettings =
+                _configuration.GetSection("JwtSettings");
+
+            var keyString = jwtSettings["Key"]
+                ?? throw new InvalidOperationException(
+                    "JWT Key chưa được cấu hình."
+                );
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(keyString)
+            );
+
+            var credentials =
+                new SigningCredentials(
+                    key,
+                    SecurityAlgorithms.HmacSha256
+                );
+
+            var claims = new List<Claim>
+    {
+        new Claim(
+            ClaimTypes.NameIdentifier,
+            user.Id.ToString()
+        ),
+
+        new Claim(
+            ClaimTypes.Email,
+            user.Email
+        )
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(
+                    int.Parse(
+                        jwtSettings["ExpireMinutes"] ?? "60"
+                    )
+                ),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler()
+                .WriteToken(token);
+        }
+
         // REGISTER
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            // Kiểm tra email
+            // Kiểm tra email đã có tài khoản chính thức chưa
             var emailExists = await _context.Users
                 .AnyAsync(u => u.Email == request.Email);
 
@@ -39,64 +94,169 @@ namespace MyAPI.Controllers
                 return BadRequest("Email đã tồn tại.");
             }
 
-            // Tạo User
-            var user = new User
+
+            // Nếu trước đó email này đã đăng ký nhưng chưa nhập OTP
+            // thì xóa đăng ký tạm cũ
+            var oldPending = await _context.PendingRegistrations
+                .FirstOrDefaultAsync(p => p.Email == request.Email);
+
+            if (oldPending != null)
+            {
+                _context.PendingRegistrations.Remove(oldPending);
+            }
+
+
+            // Tạo object User tạm để dùng PasswordHasher<User>
+            var tempUser = new User
             {
                 Email = request.Email
             };
 
             // Hash password
-            user.PasswordHash = _passwordHasher.HashPassword(
-                user,
-                request.Password
-            );
+            string passwordHash =
+                _passwordHasher.HashPassword(
+                    tempUser,
+                    request.Password
+                );
 
-            // Lưu database
-            _context.Users.Add(user);
+
+            // Tạo OTP 6 số
+            Random random = new Random();
+
+            string otp =
+                random.Next(100000, 1000000)
+                    .ToString();
+
+
+            // OTP có hiệu lực 5 phút
+            var expiryTime =
+                DateTime.Now.AddMinutes(5);
+
+
+            // Lưu đăng ký tạm
+            var pendingRegistration =
+                new PendingRegistration
+                {
+                    Email = request.Email,
+                    PasswordHash = passwordHash,
+                    OTP = otp,
+                    ExpiryTime = expiryTime
+                };
+
+
+            _context.PendingRegistrations
+                .Add(pendingRegistration);
 
             await _context.SaveChangesAsync();
 
+
+            // Lấy cấu hình Gmail
+            var emailSettings =
+                _configuration
+                    .GetSection("EmailSettings")
+                    .Get<EmailSettings>();
+
+
+            // Tạo email
+            var message = new MimeMessage();
+
+            message.From.Add(
+                new MailboxAddress(
+                    "SmartFood",
+                    emailSettings.Email
+                )
+            );
+
+            message.To.Add(
+                new MailboxAddress(
+                    request.Email,
+                    request.Email
+                )
+            );
+
+            message.Subject =
+                "Mã OTP xác nhận đăng ký SmartFood";
+
+            message.Body =
+                new TextPart("plain")
+                {
+                    Text =
+                        $"Xin chào,\n\n" +
+                        $"Mã OTP đăng ký SmartFood của bạn là: {otp}\n\n" +
+                        $"Mã có hiệu lực trong 5 phút.\n\n" +
+                        $"Nếu bạn không thực hiện đăng ký, hãy bỏ qua email này."
+                };
+
+
+            // Gửi email
+            using (var smtp = new SmtpClient())
+            {
+                await smtp.ConnectAsync(
+                    emailSettings.SmtpServer,
+                    emailSettings.Port,
+                    MailKit.Security.SecureSocketOptions.StartTls
+                );
+
+                await smtp.AuthenticateAsync(
+                    emailSettings.Email,
+                    emailSettings.Password
+                );
+
+                await smtp.SendAsync(message);
+
+                await smtp.DisconnectAsync(true);
+            }
+
             return Ok(new
             {
-                message = "Đăng ký thành công.",
-                userId = user.Id,
-                email = user.Email
+                message = "OTP đã được gửi đến email."
             });
         }
 
         // UPDATE PROFILE
-        [HttpPut("profile/{userId}")]
+        [Authorize]
+        [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile(
-            int userId,
-            SetupProfileRequest request)
+    SetupProfileRequest request)
         {
-            // Tìm user theo Id
+            // Lấy UserId từ JWT
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier
+            );
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("Token không hợp lệ.");
+            }
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            // Tìm User
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            // Không tìm thấy user
             if (user == null)
             {
                 return NotFound("Không tìm thấy tài khoản.");
             }
 
-            // Kiểm tra tên hiển thị
+            // Kiểm tra username
             if (string.IsNullOrWhiteSpace(request.Username))
             {
-                return BadRequest("Tên hiển thị không được để trống.");
+                return BadRequest(
+                    "Tên hiển thị không được để trống."
+                );
             }
 
-            // Cập nhật thông tin profile
+            // Cập nhật
             user.Username = request.Username;
             user.Avatar = request.Avatar;
 
-            // Lưu database
             await _context.SaveChangesAsync();
 
             return Ok(new
             {
                 message = "Thiết lập hồ sơ thành công.",
-                userId = user.Id,
                 username = user.Username,
                 avatar = user.Avatar
             });
@@ -125,10 +285,12 @@ namespace MyAPI.Controllers
                 return Unauthorized("Email hoặc password không đúng.");
             }
 
+            string token = GenerateJwtToken(user);
+
             return Ok(new
             {
                 message = "Đăng nhập thành công.",
-                userId = user.Id,
+                token = token,
                 username = user.Username,
                 email = user.Email
             });
@@ -226,11 +388,65 @@ namespace MyAPI.Controllers
         }
         // VERIFY OTP
 
-            [HttpPost("verify-otp")]
-            public async Task<IActionResult> VerifyOtp(
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp(
         VerifyOtpRequest request)
+        {
+            // XÁC THỰC OTP ĐĂNG KÝ
+            if (request.Purpose == "REGISTER")
             {
-                // Tìm OTP trong database
+                var pending = await _context.PendingRegistrations
+                    .FirstOrDefaultAsync(x =>
+                        x.Email == request.Email &&
+                        x.OTP == request.OTP
+                    );
+
+                // Không tìm thấy
+                if (pending == null)
+                {
+                    return BadRequest("OTP không đúng.");
+                }
+
+                // OTP hết hạn
+                if (pending.ExpiryTime < DateTime.Now)
+                {
+                    return BadRequest("OTP đã hết hạn.");
+                }
+
+                // Kiểm tra lại email trước khi tạo User
+                var emailExists = await _context.Users
+                    .AnyAsync(u => u.Email == request.Email);
+
+                if (emailExists)
+                {
+                    return BadRequest("Email đã được đăng ký.");
+                }
+
+                // OTP chính xác -> tạo User thật
+                var user = new User
+                {
+                    Email = pending.Email,
+                    PasswordHash = pending.PasswordHash
+                };
+
+                _context.Users.Add(user);
+
+                // Xóa đăng ký tạm
+                _context.PendingRegistrations.Remove(pending);
+
+                await _context.SaveChangesAsync();
+
+                string token = GenerateJwtToken(user);
+
+                return Ok(new
+                {
+                    message = "Xác nhận đăng ký thành công.",
+                    token = token
+                });
+            }
+            // XÁC THỰC OTP QUÊN MẬT KHẨU
+            if (request.Purpose == "RESET_PASSWORD")
+            {
                 var resetToken = await _context.PasswordResetTokens
                     .Where(x =>
                         x.Email == request.Email &&
@@ -239,13 +455,11 @@ namespace MyAPI.Controllers
                     .OrderByDescending(x => x.Id)
                     .FirstOrDefaultAsync();
 
-                // Không tìm thấy OTP
                 if (resetToken == null)
                 {
                     return BadRequest("OTP không đúng.");
                 }
 
-                // Kiểm tra OTP hết hạn
                 if (resetToken.ExpiryTime < DateTime.Now)
                 {
                     return BadRequest("OTP đã hết hạn.");
@@ -255,11 +469,14 @@ namespace MyAPI.Controllers
                 {
                     message = "OTP chính xác."
                 });
+            }
+
+            // Purpose không hợp lệ
+            return BadRequest("Mục đích xác thực OTP không hợp lệ.");
         }
 
         // RESET PASSWORD
-      
-            [HttpPost("reset-password")]
+        [HttpPost("reset-password")]
             public async Task<IActionResult> ResetPassword(
         ResetPasswordRequest request)
             {

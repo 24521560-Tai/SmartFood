@@ -305,3 +305,4 @@ D:\SmartFood\MyAPI\obj\Debug\net8.0\refint\MyAPI.dll
 D:\SmartFood\MyAPI\obj\Debug\net8.0\MyAPI.pdb
 D:\SmartFood\MyAPI\obj\Debug\net8.0\MyAPI.genruntimeconfig.cache
 D:\SmartFood\MyAPI\obj\Debug\net8.0\ref\MyAPI.dll
+D:\SmartFood\MyAPI\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

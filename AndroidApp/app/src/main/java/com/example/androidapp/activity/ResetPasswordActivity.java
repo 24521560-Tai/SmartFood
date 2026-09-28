@@ -44,7 +44,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         otp = getIntent().getStringExtra("otp");
 
         // Lấy AuthApi
-        authApi = ApiClient.getAuthApi();
+        authApi = ApiClient.getAuthApi(this);
 
         // Bấm nút đổi mật khẩu
         btnResetPassword.setOnClickListener(v -> {

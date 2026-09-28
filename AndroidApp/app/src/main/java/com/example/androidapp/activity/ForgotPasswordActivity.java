@@ -38,7 +38,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         txtBackToLogin = findViewById(R.id.txtBackToLogin);
 
         // Lấy AuthApi
-        authApi = ApiClient.getAuthApi();
+        authApi = ApiClient.getAuthApi(this);
 
         // Bấm nút Gửi OTP
         btnSendOtp.setOnClickListener(v -> {
@@ -85,7 +85,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                                 // Gửi email sang Activity OTP
                                 intent.putExtra("email", email);
-
+                                intent.putExtra("purpose", "RESET_PASSWORD");
                                 startActivity(intent);
 
                             } else {

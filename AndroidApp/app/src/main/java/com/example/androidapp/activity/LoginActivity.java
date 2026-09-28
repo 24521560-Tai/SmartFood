@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         txtRegister = findViewById(R.id.txtRegister);
 
         // Lấy API
-        authApi = ApiClient.getAuthApi();
+        authApi = ApiClient.getAuthApi(this);
 
         // Bắt sự kiện nút Login
         btnLogin.setOnClickListener(v -> login());

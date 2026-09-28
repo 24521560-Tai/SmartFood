@@ -34,16 +34,11 @@
   {
     "ContainingType": "MyAPI.Controllers.AuthController",
     "Method": "UpdateProfile",
-    "RelativePath": "api/Auth/profile/{userId}",
+    "RelativePath": "api/Auth/profile",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
       {
         "Name": "request",
         "Type": "MyAPI.DTOs.SetupProfileRequest",

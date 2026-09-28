@@ -36,21 +36,10 @@
         }
       }
     },
-    "/api/Auth/profile/{userId}": {
+    "/api/Auth/profile": {
       "put": {
         "tags": [
           "Auth"
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
         ],
         "requestBody": {
           "content": {
@@ -359,6 +348,10 @@
             "nullable": true
           },
           "otp": {
+            "type": "string",
+            "nullable": true
+          },
+          "purpose": {
             "type": "string",
             "nullable": true
           }

@@ -12,5 +12,6 @@ namespace MyAPI.Database
 
         public DbSet<User> Users { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+        public DbSet<PendingRegistration> PendingRegistrations { get; set; }
     }
 }
