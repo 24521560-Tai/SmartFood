@@ -52,7 +52,7 @@ namespace MyAPI.Controllers
                     SecurityAlgorithms.HmacSha256
                 );
 
-            var claims = new List<Claim>
+                var claims = new List<Claim>
     {
         new Claim(
             ClaimTypes.NameIdentifier,
@@ -62,6 +62,11 @@ namespace MyAPI.Controllers
         new Claim(
             ClaimTypes.Email,
             user.Email
+        ),
+
+        new Claim(
+            ClaimTypes.Role,
+            user.Role
         )
     };
 
@@ -212,56 +217,6 @@ namespace MyAPI.Controllers
                 message = "OTP đã được gửi đến email."
             });
         }
-
-        // UPDATE PROFILE
-        [Authorize]
-        [HttpPut("profile")]
-        public async Task<IActionResult> UpdateProfile(
-    SetupProfileRequest request)
-        {
-            // Lấy UserId từ JWT
-            var userIdClaim = User.FindFirst(
-                ClaimTypes.NameIdentifier
-            );
-
-            if (userIdClaim == null)
-            {
-                return Unauthorized("Token không hợp lệ.");
-            }
-
-            int userId = int.Parse(userIdClaim.Value);
-
-            // Tìm User
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (user == null)
-            {
-                return NotFound("Không tìm thấy tài khoản.");
-            }
-
-            // Kiểm tra username
-            if (string.IsNullOrWhiteSpace(request.Username))
-            {
-                return BadRequest(
-                    "Tên hiển thị không được để trống."
-                );
-            }
-
-            // Cập nhật
-            user.Username = request.Username;
-            user.Avatar = request.Avatar;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Thiết lập hồ sơ thành công.",
-                username = user.Username,
-                avatar = user.Avatar
-            });
-        }
-
         // LOGIN
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)

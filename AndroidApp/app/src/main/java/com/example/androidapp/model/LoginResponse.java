@@ -3,7 +3,7 @@ package com.example.androidapp.model;
 public class LoginResponse {
 
     private String message;
-    private int userId;
+    private String token;
     private String username;
     private String email;
 
@@ -11,8 +11,8 @@ public class LoginResponse {
         return message;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getToken() {
+        return token;
     }
 
     public String getUsername() {

@@ -16,14 +16,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".activity.LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AndroidApp"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.RegisterActivity"
@@ -48,6 +42,17 @@
         <activity
             android:name=".activity.HomeActivity"
             android:exported="false" />
+        <activity
+            android:name=".activity.SplashActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
 
     </application>
 

@@ -12,6 +12,7 @@ import com.example.androidapp.api.AuthApi;
 import com.example.androidapp.api.ApiClient;
 import com.example.androidapp.model.LoginRequest;
 import com.example.androidapp.model.LoginResponse;
+import com.example.androidapp.utils.TokenManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -111,17 +112,41 @@ public class LoginActivity extends AppCompatActivity {
 
                     LoginResponse data = response.body();
 
-                    Intent intent =
-                            new Intent(
-                                    LoginActivity.this,
-                                    HomeActivity.class
-                            );
+                    if (data == null) {
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Không nhận được dữ liệu từ server",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
 
-                    intent.putExtra("userId", data.getUserId());
+                    // Lấy JWT server trả về
+                    String token = data.getToken();
+
+                    if (token == null || token.isEmpty()) {
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Không nhận được token",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    // Lưu JWT
+                    TokenManager tokenManager =
+                            new TokenManager(LoginActivity.this);
+
+                    tokenManager.saveToken(token);
+
+                    // Chuyển sang Home
+                    Intent intent = new Intent(
+                            LoginActivity.this,
+                            HomeActivity.class
+                    );
 
                     startActivity(intent);
                     finish();
-
                 }
                 else {
 

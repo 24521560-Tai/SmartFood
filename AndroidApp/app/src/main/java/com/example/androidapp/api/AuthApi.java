@@ -8,12 +8,12 @@ import com.example.androidapp.model.ForgotPasswordRequest;
 import com.example.androidapp.model.VerifyOtpRequest;
 import com.example.androidapp.model.ResetPasswordRequest;
 import com.example.androidapp.model.MessageResponse;
-import com.example.androidapp.model.SetupProfileRequest;
 import com.example.androidapp.model.VerifyOtpResponse;
 
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -39,9 +39,5 @@ public interface AuthApi {
     @POST("api/Auth/reset-password")
     Call<MessageResponse> resetPassword(
             @Body ResetPasswordRequest request
-    );
-    @PUT("api/Auth/profile")
-    Call<MessageResponse> updateProfile(
-            @Body SetupProfileRequest request
     );
 }

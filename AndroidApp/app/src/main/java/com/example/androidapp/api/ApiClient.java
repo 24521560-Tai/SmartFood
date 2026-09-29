@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static final String BASE_URL =
-            "http://192.168.137.1:5222/";
+            "http://10.0.136.207:5222/";
 
     private static Retrofit retrofit;
 
@@ -52,5 +52,10 @@ public class ApiClient {
 
         return getRetrofit(context)
                 .create(AuthApi.class);
+    }
+    public static UserApi getUserApi(Context context) {
+
+        return getRetrofit(context)
+                .create(UserApi.class);
     }
 }

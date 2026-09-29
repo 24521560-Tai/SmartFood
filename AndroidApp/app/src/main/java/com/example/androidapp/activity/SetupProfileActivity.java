@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.api.ApiClient;
 import com.example.androidapp.api.AuthApi;
+import com.example.androidapp.api.UserApi;
 import com.example.androidapp.model.MessageResponse;
 import com.example.androidapp.model.SetupProfileRequest;
 import com.google.android.material.card.MaterialCardView;
@@ -67,7 +68,7 @@ public class SetupProfileActivity extends AppCompatActivity {
     // API
     // =========================
 
-    private AuthApi authApi;
+    private UserApi userApi;
 
 
     // =========================
@@ -135,7 +136,7 @@ public class SetupProfileActivity extends AppCompatActivity {
         // API
         // =========================
 
-        authApi = ApiClient.getAuthApi(this);
+        userApi = ApiClient.getUserApi(this);
 
 
         // =========================
@@ -355,7 +356,7 @@ public class SetupProfileActivity extends AppCompatActivity {
         // GỌI API
         // =========================
 
-        authApi.updateProfile(
+        userApi.updateProfile(
                 request
         ).enqueue(
                 new Callback<MessageResponse>() {
