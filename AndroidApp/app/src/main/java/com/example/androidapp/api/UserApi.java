@@ -1,5 +1,6 @@
 package com.example.androidapp.api;
 
+import com.example.androidapp.model.ChangePasswordRequest;
 import com.example.androidapp.model.MessageResponse;
 import com.example.androidapp.model.SetupProfileRequest;
 import com.example.androidapp.model.UserResponse;
@@ -17,5 +18,10 @@ public interface UserApi {
     @PUT("api/User/profile")
     Call<MessageResponse> updateProfile(
             @Body SetupProfileRequest request
+    );
+
+    @PUT("api/User/change-password")
+    Call<MessageResponse> changePassword(
+            @Body ChangePasswordRequest request
     );
 }

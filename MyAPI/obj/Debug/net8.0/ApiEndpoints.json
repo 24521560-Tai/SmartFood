@@ -81,6 +81,22 @@
   },
   {
     "ContainingType": "MyAPI.Controllers.UserController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/User/change-password",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "MyAPI.DTOs.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyAPI.Controllers.UserController",
     "Method": "GetCurrentUser",
     "RelativePath": "api/User/me",
     "HttpMethod": "GET",

@@ -94,7 +94,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                app:endIconMode="password_toggle">
+                app:endIconMode="password_toggle"
+                app:helperText="Mật khẩu phải có ít nhất 8 ký tự"
+                app:helperTextTextColor="#78909C">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtPassword"

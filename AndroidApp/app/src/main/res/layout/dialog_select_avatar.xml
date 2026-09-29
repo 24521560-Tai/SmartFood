@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn ảnh đại diện"
+        android:textColor="#263238"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+
+    <!-- HÀNG 1 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/avatarCarrot"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="6dp"
+            android:padding="5dp"
+            android:src="@drawable/avatar_carrot" />
+
+        <ImageView
+            android:id="@+id/avatarBroccoli"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="6dp"
+            android:padding="5dp"
+            android:src="@drawable/avatar_broccoli" />
+
+        <ImageView
+            android:id="@+id/avatarTomato"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="6dp"
+            android:padding="5dp"
+            android:src="@drawable/avatar_tomato" />
+
+        <ImageView
+            android:id="@+id/avatarCabbage"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="6dp"
+            android:padding="5dp"
+            android:src="@drawable/avatar_cabbage" />
+
+    </LinearLayout>
+
+
+    <!-- HÀNG 2 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/avatarCorn"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="6dp"
+            android:padding="5dp"
+            android:src="@drawable/avatar_corn" />
+
+        <ImageView
+            android:id="@+id/avatarAvocado"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="6dp"
+            android:padding="5dp"
+            android:src="@drawable/avatar_avocado" />
+
+        <ImageView
+            android:id="@+id/avatarOrange"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="6dp"
+            android:padding="5dp"
+            android:src="@drawable/avatar_orange" />
+
+        <ImageView
+            android:id="@+id/avatarChili"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="6dp"
+            android:padding="5dp"
+            android:src="@drawable/avatar_chili" />
+
+    </LinearLayout>
+
+</LinearLayout>
