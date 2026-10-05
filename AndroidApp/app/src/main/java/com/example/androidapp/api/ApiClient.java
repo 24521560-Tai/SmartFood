@@ -58,4 +58,7 @@ public class ApiClient {
         return getRetrofit(context)
                 .create(UserApi.class);
     }
+    public static FoodItemApi getFoodItemApi(Context context) {
+        return getRetrofit(context).create(FoodItemApi.class);
+    }
 }
