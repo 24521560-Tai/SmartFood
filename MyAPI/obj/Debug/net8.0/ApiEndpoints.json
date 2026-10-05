@@ -80,6 +80,52 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "MyAPI.Controllers.FoodItemsController",
+    "Method": "AddManualFood",
+    "RelativePath": "api/FoodItems/manual",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CategoryId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Quantity",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "Unit",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExpiryDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "Note",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "MyAPI.Controllers.UserController",
     "Method": "ChangePassword",
     "RelativePath": "api/User/change-password",

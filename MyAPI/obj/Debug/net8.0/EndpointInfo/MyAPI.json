@@ -160,6 +160,87 @@
         }
       }
     },
+    "/api/FoodItems/manual": {
+      "post": {
+        "tags": [
+          "FoodItems"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "CategoryId",
+                  "ExpiryDate",
+                  "Name",
+                  "Quantity",
+                  "Unit"
+                ],
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "CategoryId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Quantity": {
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "Unit": {
+                    "maxLength": 50,
+                    "type": "string"
+                  },
+                  "ExpiryDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "Note": {
+                    "maxLength": 500,
+                    "type": "string"
+                  },
+                  "Image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "CategoryId": {
+                  "style": "form"
+                },
+                "Quantity": {
+                  "style": "form"
+                },
+                "Unit": {
+                  "style": "form"
+                },
+                "ExpiryDate": {
+                  "style": "form"
+                },
+                "Note": {
+                  "style": "form"
+                },
+                "Image": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/User/me": {
       "get": {
         "tags": [

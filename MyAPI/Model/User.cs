@@ -17,5 +17,8 @@ namespace MyAPI.Model
         public string? Avatar { get; set; }
 
         public string Role { get; set; } = "User";
+
+        public ICollection<FoodItem> FoodItems { get; set; }
+    = new List<FoodItem>();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.androidapp.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,18 @@ public class HomeFragment extends Fragment {
                 false
         );
 
+        View btnAddManual =
+                view.findViewById(R.id.cardAddManual);
 
+        btnAddManual.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    requireContext(),
+                    AddFoodActivity.class
+            );
+
+            startActivity(intent);
+        });
         // =========================
         // ÁNH XẠ VIEW
         // =========================
@@ -127,7 +139,6 @@ public class HomeFragment extends Fragment {
                 }
         );
     }
-
 
     // =====================================================
     // HIỂN THỊ AVATAR

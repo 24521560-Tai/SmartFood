@@ -66,7 +66,7 @@ if (app.Environment.IsDevelopment())
 
 //hiện tại đang dùng HTTP qua LAN
 // app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 

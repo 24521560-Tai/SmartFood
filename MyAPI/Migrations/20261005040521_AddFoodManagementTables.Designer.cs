@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyAPI.Database;
 
@@ -11,9 +12,11 @@ using MyAPI.Database;
 namespace MyAPI.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20261005040521_AddFoodManagementTables")]
+    partial class AddFoodManagementTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,53 +44,6 @@ namespace MyAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Rau củ"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Trái cây"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Thịt"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Hải sản"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Sữa & sản phẩm từ sữa"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Đồ uống"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Đồ khô"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Gia vị"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Bánh kẹo"
-                        });
                 });
 
             modelBuilder.Entity("MyAPI.Model.Food", b =>
