@@ -81,6 +81,62 @@
   },
   {
     "ContainingType": "MyAPI.Controllers.FoodItemsController",
+    "Method": "AddBarcodeFood",
+    "RelativePath": "api/FoodItems/barcode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Barcode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Brand",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CategoryId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Quantity",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "Unit",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExpiryDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "Note",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyAPI.Controllers.FoodItemsController",
     "Method": "AddManualFood",
     "RelativePath": "api/FoodItems/manual",
     "HttpMethod": "POST",
@@ -121,6 +177,22 @@
         "Name": "Image",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyAPI.Controllers.FoodsController",
+    "Method": "GetByBarcode",
+    "RelativePath": "api/Foods/barcode/{barcode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "barcode",
+        "Type": "System.String",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

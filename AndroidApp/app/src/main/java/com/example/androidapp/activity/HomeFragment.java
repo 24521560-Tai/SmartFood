@@ -17,6 +17,8 @@ import com.example.androidapp.R;
 import com.example.androidapp.api.ApiClient;
 import com.example.androidapp.api.UserApi;
 import com.example.androidapp.model.UserResponse;
+import android.content.Intent;
+import com.example.androidapp.activity.ScanBarcodeActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,6 +55,17 @@ public class HomeFragment extends Fragment {
                     AddFoodActivity.class
             );
 
+            startActivity(intent);
+        });
+
+        View btnScanBarcode =
+                view.findViewById(R.id.cardScanBarcode);
+
+        btnScanBarcode.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    requireContext(),
+                    ScanBarcodeActivity.class
+            );
             startActivity(intent);
         });
         // =========================

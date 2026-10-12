@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static final String BASE_URL =
-            "http://10.0.147.155:5222/";
+            "http://10.0.183.133:5222/";
 
     private static Retrofit retrofit;
 
@@ -60,5 +60,9 @@ public class ApiClient {
     }
     public static FoodItemApi getFoodItemApi(Context context) {
         return getRetrofit(context).create(FoodItemApi.class);
+    }
+
+    public static BarcodeApi getBarcodeApi(Context context) {
+        return getRetrofit(context).create(BarcodeApi.class);
     }
 }

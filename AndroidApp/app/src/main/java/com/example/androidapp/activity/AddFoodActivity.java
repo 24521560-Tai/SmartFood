@@ -47,6 +47,11 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import com.bumptech.glide.Glide;
+import android.util.Log;
+import android.view.View;
+import com.bumptech.glide.Glide;
+
 public class AddFoodActivity extends AppCompatActivity {
 
     // =========================
@@ -69,7 +74,11 @@ public class AddFoodActivity extends AppCompatActivity {
 
     private android.net.Uri selectedImageUri;
     private android.net.Uri cameraImageUri;
-
+    private boolean isBarcodeMode = false;
+    private String scannedBarcode;
+    private String scannedBrand;
+    private String scannedImageUrl;
+    private Integer scannedCategoryId;
     // =========================
     // DATA
     // =========================
@@ -119,6 +128,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
         setupImagePicker();
         setupAddFoodButton();
+        receiveBarcodeData();
     }
 
 
@@ -143,11 +153,55 @@ public class AddFoodActivity extends AppCompatActivity {
                 findViewById(R.id.txtSelectedCategory);
     }
 
-
     // =========================
     // QUAY LẠI
     // =========================
+    private void receiveBarcodeData() {
 
+        Intent intent = getIntent();
+
+        String mode = intent.getStringExtra("mode");
+
+        if (!"BARCODE".equals(mode)) {
+            return;
+        }
+
+        isBarcodeMode = true;
+
+
+        scannedBarcode = intent.getStringExtra("barcode");
+        scannedBrand = intent.getStringExtra("brand");
+        scannedImageUrl = intent.getStringExtra("imageUrl");
+
+// Nhận danh mục nếu có
+        if (intent.hasExtra("categoryId")) {
+            int categoryId = intent.getIntExtra("categoryId", -1);
+
+            if (categoryId > 0) {
+                scannedCategoryId = categoryId;
+            }
+        }
+
+// Hiển thị tên thực phẩm
+        String name = intent.getStringExtra("name");
+
+        if (name != null && !name.trim().isEmpty()) {
+            edtFoodName.setText(name);
+        }
+
+// Hiển thị ảnh thực phẩm từ Open Food Facts
+        if (scannedImageUrl != null && !scannedImageUrl.trim().isEmpty()) {
+
+            layoutAddImage.setVisibility(View.GONE);
+            imgFoodPreview.setVisibility(View.VISIBLE);
+
+            Glide.with(this)
+                    .load(scannedImageUrl)
+                    .centerCrop()
+                    .into(imgFoodPreview);
+        }
+
+    }
     private void setupBackButton() {
 
         findViewById(R.id.btnBack)

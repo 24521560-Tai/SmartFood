@@ -56,6 +56,7 @@ builder.Services
                 ClockSkew = TimeSpan.Zero
             };
     });
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
