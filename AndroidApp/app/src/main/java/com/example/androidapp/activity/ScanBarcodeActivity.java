@@ -39,7 +39,10 @@ import android.widget.Button;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-@androidx.camera.core.ExperimentalGetImage
+import androidx.camera.core.ExperimentalGetImage;
+import androidx.annotation.OptIn;
+
+
 public class ScanBarcodeActivity extends AppCompatActivity {
 
     private PreviewView previewView;
@@ -205,6 +208,7 @@ public class ScanBarcodeActivity extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
+    @OptIn(markerClass = ExperimentalGetImage.class)
     private void analyzeImage(@NonNull ImageProxy imageProxy) {
 
         if (isScanned.get()) {

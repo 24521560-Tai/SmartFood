@@ -241,7 +241,13 @@ public class AddFoodActivity extends AppCompatActivity {
 
         btnAddFood.setOnClickListener(v -> {
 
-            if (validateInput()) {
+            if (!validateInput()) {
+                return;
+            }
+
+            if (isBarcodeMode) {
+                uploadBarcodeFood();
+            } else {
                 uploadFood();
             }
         });
@@ -483,6 +489,151 @@ public class AddFoodActivity extends AppCompatActivity {
             }
         });
     }
+    private void uploadBarcodeFood() {
+
+        // Kiểm tra Barcode
+        if (scannedBarcode == null
+                || scannedBarcode.trim().isEmpty()) {
+
+            Toast.makeText(
+                    this,
+                    "Không tìm thấy mã Barcode",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        // Lấy dữ liệu từ form
+        String name =
+                edtFoodName.getText().toString().trim();
+
+        String quantity =
+                edtQuantity.getText().toString().trim();
+
+        String unit =
+                actUnit.getText().toString().trim();
+
+        String expiryDate =
+                edtExpiryDate.getText().toString().trim();
+
+        String note = edtNote.getText() == null
+                ? ""
+                : edtNote.getText().toString().trim();
+
+        String brand = scannedBrand == null
+                ? ""
+                : scannedBrand.trim();
+
+        // Tạo RequestBody
+        RequestBody barcodeBody =
+                createTextBody(scannedBarcode);
+
+        RequestBody nameBody =
+                createTextBody(name);
+
+        RequestBody brandBody =
+                createTextBody(brand);
+
+        RequestBody categoryBody =
+                createTextBody(String.valueOf(selectedCategoryId));
+
+        RequestBody quantityBody =
+                createTextBody(quantity);
+
+        RequestBody unitBody =
+                createTextBody(unit);
+
+        RequestBody expiryBody =
+                createTextBody(expiryDate);
+
+        RequestBody noteBody =
+                createTextBody(note);
+
+        // Xử lý ảnh nếu người dùng chọn ảnh mới
+        MultipartBody.Part imagePart = null;
+
+        try {
+
+            if (selectedImageUri != null) {
+
+                imagePart =
+                        createImagePart(selectedImageUri);
+            }
+
+        } catch (Exception e) {
+
+            Toast.makeText(
+                    this,
+                    "Không thể đọc ảnh đã chọn",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        // Gọi API
+        setLoading(true);
+
+        FoodItemApi api =
+                ApiClient.getFoodItemApi(this);
+
+        api.addBarcodeFood(
+                barcodeBody,
+                nameBody,
+                brandBody,
+                categoryBody,
+                quantityBody,
+                unitBody,
+                expiryBody,
+                noteBody,
+                imagePart
+        ).enqueue(new Callback<AddFoodResponse>() {
+
+            @Override
+            public void onResponse(
+                    Call<AddFoodResponse> call,
+                    Response<AddFoodResponse> response) {
+
+                setLoading(false);
+
+                if (response.isSuccessful()) {
+
+                    Toast.makeText(
+                            AddFoodActivity.this,
+                            "Đã thêm thực phẩm vào kho",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    finish();
+
+                } else {
+
+                    Toast.makeText(
+                            AddFoodActivity.this,
+                            "Không thể thêm thực phẩm. Mã lỗi: "
+                                    + response.code(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(
+                    Call<AddFoodResponse> call,
+                    Throwable t) {
+
+                setLoading(false);
+
+                Toast.makeText(
+                        AddFoodActivity.this,
+                        "Lỗi kết nối: " + t.getMessage(),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
+    }
+
     private RequestBody createTextBody(String value) {
 
         return RequestBody.create(

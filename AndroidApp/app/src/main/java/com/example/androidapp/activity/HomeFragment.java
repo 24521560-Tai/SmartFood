@@ -68,6 +68,17 @@ public class HomeFragment extends Fragment {
             );
             startActivity(intent);
         });
+
+        View btnProfile = view.findViewById(R.id.imgAvatar);
+
+        btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    requireContext(),
+                    ProfileActivity.class
+            );
+
+            startActivity(intent);
+        });
         // =========================
         // ÁNH XẠ VIEW
         // =========================

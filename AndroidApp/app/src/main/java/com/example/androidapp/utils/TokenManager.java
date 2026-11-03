@@ -1,7 +1,13 @@
+
 package com.example.androidapp.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Base64;
+
+import org.json.JSONObject;
+
+import java.nio.charset.StandardCharsets;
 
 public class TokenManager {
 
@@ -29,14 +35,56 @@ public class TokenManager {
         return preferences.getString(KEY_TOKEN, null);
     }
 
-    // Kiểm tra có token hay chưa
+    // Kiểm tra token có tồn tại và chưa hết hạn
     public boolean hasToken() {
         String token = getToken();
 
-        return token != null && !token.isEmpty();
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+
+        try {
+            // JWT gồm Header.Payload.Signature
+            String[] parts = token.split("\\.");
+
+            if (parts.length != 3) {
+                clearToken();
+                return false;
+            }
+
+            // Giải mã Payload
+            byte[] decodedBytes = Base64.decode(
+                    parts[1],
+                    Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING
+            );
+
+            String payload = new String(
+                    decodedBytes,
+                    StandardCharsets.UTF_8
+            );
+
+            JSONObject json = new JSONObject(payload);
+
+            // Lấy thời điểm hết hạn (Unix timestamp)
+            long exp = json.getLong("exp");
+
+            // Thời gian hiện tại tính bằng giây
+            long currentTime = System.currentTimeMillis() / 1000;
+
+            if (currentTime >= exp) {
+                clearToken();
+                return false;
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            clearToken();
+            return false;
+        }
     }
 
-    // Xóa token khi logout
+    // Xóa JWT khi logout hoặc hết hạn
     public void clearToken() {
         preferences.edit()
                 .remove(KEY_TOKEN)

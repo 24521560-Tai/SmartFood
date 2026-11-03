@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="Thêm thực phẩm"
+        android:textColor="#263238"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <!-- Quét Barcode -->
+    <LinearLayout
+        android:id="@+id/optionBarcode"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="#E8F5E9"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="▦  Quét mã Barcode"
+            android:textColor="#2E7D32"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+    <!-- Nhập thủ công -->
+    <LinearLayout
+        android:id="@+id/optionManual"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginTop="12dp"
+        android:background="#E8F5E9"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✎  Nhập thủ công"
+            android:textColor="#2E7D32"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+</LinearLayout>

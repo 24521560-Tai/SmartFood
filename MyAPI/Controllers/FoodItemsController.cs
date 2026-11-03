@@ -27,6 +27,64 @@ namespace MyAPI.Controllers
             _environment = environment;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetMyFoodItems()
+        {
+            // 1. Lấy UserId từ JWT
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier
+            )?.Value;
+
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            // 2. Lấy danh sách thực phẩm của người dùng
+            var foodItems = await _context.FoodItems
+                .AsNoTracking()
+                .Where(fi => fi.UserId == userId)
+                .OrderBy(fi => fi.ExpiryDate)
+                .ThenByDescending(fi => fi.AddedAt)
+                .Select(fi => new
+                {
+                    id = fi.Id,
+
+                    // Ưu tiên tên riêng, nếu không có lấy từ Foods
+                    name = fi.CustomName
+                        ?? (fi.Food != null ? fi.Food.Name : null),
+
+                    categoryId = fi.CustomCategoryId
+                        ?? (fi.Food != null
+                            ? (int?)fi.Food.CategoryId
+                            : null),
+
+                    categoryName = fi.CustomCategory != null
+                        ? fi.CustomCategory.Name
+                        : fi.Food != null
+                            ? fi.Food.Category.Name
+                            : null,
+
+                    imageUrl = fi.CustomImageUrl
+                        ?? (fi.Food != null
+                            ? fi.Food.ImageUrl
+                            : null),
+
+                    quantity = fi.Quantity,
+                    unit = fi.Unit,
+                    expiryDate = fi.ExpiryDate,
+                    note = fi.Note,
+                    addedAt = fi.AddedAt,
+
+                    barcode = fi.Food != null
+                        ? fi.Food.Barcode
+                        : null
+                })
+                .ToListAsync();
+
+            // 3. Trả dữ liệu JSON
+            return Ok(foodItems);
+        }
 
         [HttpPost("manual")]
         public async Task<IActionResult> AddManualFood(

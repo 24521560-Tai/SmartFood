@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp">
+
+        <!-- Ảnh thực phẩm -->
+        <ImageView
+            android:id="@+id/imgFood"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="#E8F5E9"
+            android:scaleType="centerCrop"
+            android:contentDescription="Ảnh thực phẩm"/>
+
+        <!-- Thông tin -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtFoodName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cà chua"
+                android:textColor="#263238"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/txtCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Rau củ"
+                android:textColor="#78909C"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/txtQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Số lượng: 5 quả"
+                android:textColor="#455A64"
+                android:textSize="13sp"/>
+
+        </LinearLayout>
+
+        <!-- Hạn sử dụng -->
+        <TextView
+            android:id="@+id/txtExpiry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Còn 1 ngày"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#D32F2F"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

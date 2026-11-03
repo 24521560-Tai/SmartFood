@@ -81,6 +81,16 @@
   },
   {
     "ContainingType": "MyAPI.Controllers.FoodItemsController",
+    "Method": "GetMyFoodItems",
+    "RelativePath": "api/FoodItems",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyAPI.Controllers.FoodItemsController",
     "Method": "AddBarcodeFood",
     "RelativePath": "api/FoodItems/barcode",
     "HttpMethod": "POST",

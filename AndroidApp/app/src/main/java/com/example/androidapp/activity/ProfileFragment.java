@@ -742,7 +742,6 @@ public class ProfileFragment extends Fragment {
                 }
         );
     }
-
     private void showChangePasswordDialog() {
 
         View dialogView = LayoutInflater

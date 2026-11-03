@@ -160,6 +160,18 @@
         }
       }
     },
+    "/api/FoodItems": {
+      "get": {
+        "tags": [
+          "FoodItems"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/FoodItems/manual": {
       "post": {
         "tags": [
