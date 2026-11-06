@@ -59,6 +59,9 @@
             android:name=".activity.AddFoodActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.FoodDetailActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
