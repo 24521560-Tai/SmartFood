@@ -1,6 +1,7 @@
 
 package com.example.androidapp.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidapp.R;
+import com.example.androidapp.activity.FoodDetailActivity;
 import com.example.androidapp.model.FoodItemResponse;
 import com.bumptech.glide.Glide;
 
@@ -43,6 +45,13 @@ public class FoodInventoryAdapter
             @NonNull FoodViewHolder holder, int position) {
 
         FoodItemResponse food = foodList.get(position);
+
+        // Mở màn hình chi tiết khi nhấn vào một thực phẩm
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), FoodDetailActivity.class);
+            intent.putExtra("food_id", food.getId());
+            v.getContext().startActivity(intent);
+        });
 
         holder.txtFoodName.setText(food.getName());
         holder.txtCategory.setText(food.getCategoryName());
