@@ -86,6 +86,60 @@ namespace MyAPI.Controllers
             return Ok(foodItems);
         }
 
+        // Lấy chi tiết một thực phẩm thuộc kho của người dùng hiện tại
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetFoodItemById(int id)
+        {
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier
+            )?.Value;
+
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            var foodItem = await _context.FoodItems
+                .AsNoTracking()
+                .Where(fi => fi.Id == id && fi.UserId == userId)
+                .Select(fi => new
+                {
+                    id = fi.Id,
+                    name = fi.CustomName
+                        ?? (fi.Food != null ? fi.Food.Name : null),
+                    categoryId = fi.CustomCategoryId
+                        ?? (fi.Food != null
+                            ? (int?)fi.Food.CategoryId
+                            : null),
+                    categoryName = fi.CustomCategory != null
+                        ? fi.CustomCategory.Name
+                        : fi.Food != null
+                            ? fi.Food.Category.Name
+                            : null,
+                    imageUrl = fi.CustomImageUrl
+                        ?? (fi.Food != null ? fi.Food.ImageUrl : null),
+                    quantity = fi.Quantity,
+                    unit = fi.Unit,
+                    expiryDate = fi.ExpiryDate,
+                    note = fi.Note,
+                    addedAt = fi.AddedAt,
+                    barcode = fi.Food != null
+                        ? fi.Food.Barcode
+                        : null
+                })
+                .FirstOrDefaultAsync();
+
+            if (foodItem == null)
+            {
+                return NotFound(new
+                {
+                    message = "Không tìm thấy thực phẩm trong kho của bạn."
+                });
+            }
+
+            return Ok(foodItem);
+        }
+
         [HttpPost("manual")]
         public async Task<IActionResult> AddManualFood(
             [FromForm] AddManualFoodRequest request)
