@@ -15,6 +15,10 @@ public class ApiClient {
     private static Retrofit retrofit;
 
 
+    public static String getBaseUrl() {
+        return BASE_URL;
+    }
+
     public static Retrofit getRetrofit(Context context) {
 
         if (retrofit == null) {
