@@ -2,6 +2,7 @@ package com.example.androidapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -10,7 +11,9 @@ import com.example.androidapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 public class HomeActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigation;
@@ -20,7 +23,22 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        View rootView = findViewById(android.R.id.content);
 
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (view, windowInsets) -> {
+            Insets systemBars = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.statusBars()
+            );
+
+            view.setPadding(
+                    view.getPaddingLeft(),
+                    systemBars.top,
+                    view.getPaddingRight(),
+                    view.getPaddingBottom()
+            );
+
+            return windowInsets;
+        });
         bottomNavigation = findViewById(R.id.bottomNavigation);
         fabAddFood = findViewById(R.id.fabAddFood);
 

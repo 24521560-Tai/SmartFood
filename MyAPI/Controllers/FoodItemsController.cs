@@ -440,5 +440,74 @@ namespace MyAPI.Controllers
 
             return $"/uploads/food-items/{fileName}";
         }
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetFoodItemById(int id)
+        {
+            // 1. Lấy User ID từ JWT
+            var userIdClaim = User.FindFirst(
+                System.Security.Claims.ClaimTypes.NameIdentifier
+            );
+
+            if (userIdClaim == null ||
+                !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            // 2. Tìm thực phẩm thuộc kho của người dùng
+            var foodItem = await _context.FoodItems
+                .Include(fi => fi.Food)
+                    .ThenInclude(f => f!.Category)
+                .Include(fi => fi.CustomCategory)
+                .FirstOrDefaultAsync(fi =>
+                    fi.Id == id && fi.UserId == userId
+                );
+
+            // 3. Không tìm thấy hoặc không thuộc quyền sở hữu
+            if (foodItem == null)
+            {
+                return NotFound(new
+                {
+                    message = "Không tìm thấy thực phẩm."
+                });
+            }
+
+            // 4. Trả về thông tin thống nhất cho cả hai loại thực phẩm
+            var result = new
+            {
+                id = foodItem.Id,
+
+                name = foodItem.FoodId != null
+                    ? foodItem.Food!.Name
+                    : foodItem.CustomName,
+
+                categoryId = foodItem.FoodId != null
+                    ? foodItem.Food!.CategoryId
+                    : foodItem.CustomCategoryId,
+
+                categoryName = foodItem.FoodId != null
+                    ? foodItem.Food!.Category.Name
+                    : foodItem.CustomCategory?.Name,
+
+                imageUrl = foodItem.FoodId != null
+                    ? foodItem.Food!.ImageUrl
+                    : foodItem.CustomImageUrl,
+
+                quantity = foodItem.Quantity,
+                unit = foodItem.Unit,
+                expiryDate = foodItem.ExpiryDate,
+                note = foodItem.Note,
+                addedAt = foodItem.AddedAt,
+
+                barcode = foodItem.FoodId != null
+                    ? foodItem.Food!.Barcode
+                    : null
+            };
+
+            return Ok(result);
+        }
+
     }
 }

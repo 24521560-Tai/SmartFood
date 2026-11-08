@@ -22,9 +22,16 @@ public class FoodInventoryAdapter
         extends RecyclerView.Adapter<FoodInventoryAdapter.FoodViewHolder> {
 
     private final List<FoodItemResponse> foodList;
-
-    public FoodInventoryAdapter(List<FoodItemResponse> foodList) {
+    public interface OnFoodClickListener {
+        void onFoodClick(FoodItemResponse food);
+    }
+    private final OnFoodClickListener listener;
+    public FoodInventoryAdapter(
+            List<FoodItemResponse> foodList,
+            OnFoodClickListener listener
+    ) {
         this.foodList = foodList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -43,6 +50,12 @@ public class FoodInventoryAdapter
             @NonNull FoodViewHolder holder, int position) {
 
         FoodItemResponse food = foodList.get(position);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onFoodClick(food);
+            }
+        });
 
         holder.txtFoodName.setText(food.getName());
         holder.txtCategory.setText(food.getCategoryName());
@@ -91,7 +104,7 @@ public class FoodInventoryAdapter
 
             // Đường dẫn ảnh lưu trên Backend
             if (imageUrl.startsWith("/")) {
-                imageUrl = "http://192.168.137.1:5222" + imageUrl;
+                imageUrl = "http://10.230.138.34:5222" + imageUrl;
             }
 
             Glide.with(holder.itemView.getContext())

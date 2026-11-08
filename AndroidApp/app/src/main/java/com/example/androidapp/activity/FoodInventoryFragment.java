@@ -24,6 +24,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.content.Intent;
 
 public class FoodInventoryFragment extends Fragment {
 
@@ -59,8 +60,17 @@ public class FoodInventoryFragment extends Fragment {
         );
 
         // 3. Tạo Adapter
-        adapter = new FoodInventoryAdapter(foodList);
+        //adapter = new FoodInventoryAdapter(foodList);
+        adapter = new FoodInventoryAdapter(foodList, food -> {
+            Intent intent = new Intent(
+                    requireContext(),
+                    FoodDetailActivity.class
+            );
 
+            intent.putExtra("food_id", food.getId());
+
+            startActivity(intent);
+        });
         recyclerFoodItems.setAdapter(adapter);
 
         // 4. Lấy dữ liệu từ Backend

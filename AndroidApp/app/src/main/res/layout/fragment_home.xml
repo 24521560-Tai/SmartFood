@@ -5,154 +5,266 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:fillViewport="true">
+    android:background="#F5F7F5"
+    android:fillViewport="true"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingTop="24dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="24dp">
+        android:paddingBottom="16dp">
 
-
-        <!-- ========================= -->
-        <!-- LỜI CHÀO + AVATAR -->
-        <!-- ========================= -->
+        <!-- ================================= -->
+        <!-- HEADER: TRANG CHỦ + THÔNG BÁO + AVATAR -->
+        <!-- ================================= -->
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="#FFFFFF">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/imglogo"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/logo"
+                android:contentDescription="Thông báo"
+                android:scaleType="centerInside"
+                android:layout_marginEnd="12dp"/>
+
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="Trang Chủ"
+                android:textColor="#263238"
+                android:textSize="17sp"
+                android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/txtGreeting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Xin chào, Tài 👋"
-                    android:textColor="#263238"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+            <!-- Thông báo -->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Hôm nay bạn có gì trong bếp?"
-                    android:textColor="#757575"
-                    android:textSize="14sp" />
+            <ImageView
+                android:id="@+id/imgNotification"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/ic_popup_reminder"
+                android:contentDescription="Thông báo"
+                android:scaleType="centerInside"
+                android:layout_marginEnd="12dp"/>
 
-            </LinearLayout>
-
+            <!-- AVATAR: GIỮ NGUYÊN ID CHO HOMFRAGMENT.JAVA -->
 
             <ImageView
                 android:id="@+id/imgAvatar"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:background="@drawable/bg_avatar_circle"
-                android:padding="5dp"
-                android:src="@drawable/avatar_carrot"
-                android:contentDescription="Ảnh đại diện" />
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="Ảnh đại diện"
+                android:src="@drawable/avatar_avocado"
+                />
+
 
         </LinearLayout>
 
 
-        <!-- ========================= -->
-        <!-- THỐNG KÊ KHO -->
-        <!-- ========================= -->
+        <!-- ================================= -->
+        <!-- LỜI CHÀO -->
+        <!-- ================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:background="#FFFFFF">
+
+            <TextView
+                android:id="@+id/txtGreeting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Xin chào, Tài! 👋"
+                android:textColor="#263238"
+                android:textSize="21sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Hôm nay bạn muốn nấu món gì cùng căn bếp xanh?"
+                android:textColor="#757575"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+
+        <!-- ================================= -->
+        <!-- THẺ KHO THỰC PHẨM -->
+        <!-- ================================= -->
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:cardBackgroundColor="#E8F5E9"
-            app:cardCornerRadius="20dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="#216B35"
+            app:cardCornerRadius="17dp"
             app:cardElevation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="14dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kho thực phẩm"
-                    android:textColor="#2E7D32"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
+                <!-- Tiêu đề, số lượng và ảnh minh họa -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:orientation="horizontal">
-
-                    <!-- Tổng thực phẩm -->
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center"
                         android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kho thực phẩm"
+                            android:textColor="#FFFFFF"
+                            android:textSize="17sp"
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:id="@+id/txtTotalFood"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12"
-                            android:textColor="#2E7D32"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
+                            android:layout_marginTop="4dp"
+                            android:text="Hiện có 24 thực phẩm tươi ngon"
+                            android:textColor="#D8EAD9"
+                            android:textSize="12sp"/>
+
+                    </LinearLayout>
+
+                    <!-- Ảnh minh họa kho thực phẩm -->
+                    <ImageView
+                        android:id="@+id/imgInventory"
+                        android:layout_width="68dp"
+                        android:layout_height="68dp"
+                        android:background="#E8F5E9"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Ảnh kho thực phẩm"
+                        android:src="@drawable/img_veg_home"/>
+
+                </LinearLayout>
+
+                <!-- Trạng thái thực phẩm đã hết hạn -->
+                <LinearLayout
+                    android:id="@+id/cardExpiredWarning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical">
+
+                    <!-- Trường hợp không có thực phẩm hết hạn -->
+                    <TextView
+                        android:id="@+id/txtExpiredMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Hiện không có thực phẩm nào trong kho đã hết hạn.\nBạn yên tâm sử dụng nhé!"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="3dp"/>
+
+                    <!-- Trường hợp có thực phẩm hết hạn -->
+                    <LinearLayout
+                        android:id="@+id/layoutExpiredAlert"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <TextView
+                            android:id="@+id/txtExpiredTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Có 2 loại thực phẩm đã hết hạn sử dụng."
+                            android:textColor="#FF8A80"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/btnViewExpiredDetail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Thực phẩm"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
+                            android:layout_marginTop="3dp"
+                            android:text="Ấn Xem chi tiết để xử lý."
+                            android:textColor="#FF8A80"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true"/>
 
                     </LinearLayout>
 
 
-                    <!-- Sắp hết hạn -->
-
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:id="@+id/layoutExpiringWarning"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_warning_rounded"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⚠"
+                            android:textColor="#A84312"
+                            android:textSize="14sp"/>
 
                         <TextView
                             android:id="@+id/txtExpiringCount"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="3"
-                            android:textColor="#E65100"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp"
+                            android:text="3 thực phẩm sắp hết hạn"
+                            android:textColor="#A84312"
+                            android:textSize="11sp"
+                            android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/btnPriorityFood"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sắp hết hạn"
-                            android:textColor="#757575"
-                            android:textSize="14sp" />
+                            android:background="#8D3C0D"
+                            android:paddingStart="9dp"
+                            android:paddingEnd="9dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:text="Ưu tiên dùng"
+                            android:textColor="#FFFFFF"
+                            android:textSize="10sp"
+                            android:textStyle="bold"/>
 
                     </LinearLayout>
-
                 </LinearLayout>
 
             </LinearLayout>
@@ -160,122 +272,16 @@
         </com.google.android.material.card.MaterialCardView>
 
 
-        <!-- ========================= -->
-        <!-- THAO TÁC NHANH -->
-        <!-- ========================= -->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:text="Thao tác nhanh"
-            android:textColor="#263238"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
+        <!-- ================================= -->
+        <!-- DANH SÁCH SẮP HẾT HẠN -->
+        <!-- ================================= -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal">
-
-
-            <!-- Quét barcode -->
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardScanBarcode"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:cardBackgroundColor="#F1F8E9"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="▦"
-                        android:textColor="#2E7D32"
-                        android:textSize="30sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Quét mã vạch"
-                        android:textColor="#263238"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-
-            <!-- Thêm thủ công -->
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardAddManual"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:cardBackgroundColor="#F1F8E9"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="+"
-                        android:textColor="#2E7D32"
-                        android:textSize="32sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Thêm thủ công"
-                        android:textColor="#263238"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
-
-
-        <!-- ========================= -->
-        <!-- SẮP HẾT HẠN -->
-        <!-- ========================= -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="17dp"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -285,104 +291,151 @@
                 android:layout_weight="1"
                 android:text="Sắp hết hạn"
                 android:textColor="#263238"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/txtExpiringBadge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="#FFDDDD"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="#C62828"
+                android:textSize="10sp"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/txtViewAllExpiring"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Xem tất cả"
+                android:layout_marginStart="12dp"
+                android:text="Xem tất cả ›"
                 android:textColor="#2E7D32"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textSize="11sp"
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
 
-        <!-- Sau này RecyclerView sẽ hiển thị thực phẩm -->
+        <!-- RecyclerView sử dụng Adapter hiện tại -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerExpiringFoods"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:nestedScrollingEnabled="false" />
+            android:layout_marginTop="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:overScrollMode="never"/>
 
 
-        <!-- ========================= -->
+        <!-- ================================= -->
         <!-- GỢI Ý MÓN ĂN -->
-        <!-- ========================= -->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:text="Gợi ý món ăn"
-            android:textColor="#263238"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
+        <!-- ================================= -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardRecipeSuggestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginTop="12dp"
-            app:cardCornerRadius="18dp"
+            app:cardBackgroundColor="#E5F4E6"
+            app:cardCornerRadius="17dp"
             app:cardElevation="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="11dp">
 
-                <ImageView
-                    android:id="@+id/imgRecipe"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:background="#E8F5E9"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Ảnh món ăn" />
+                <!-- Nội dung giới thiệu -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                    <TextView
-                        android:id="@+id/txtRecipeName"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Gà xào rau củ"
-                        android:textColor="#263238"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Có thể làm từ thực phẩm đang có trong kho"
-                        android:textColor="#757575"
-                        android:textSize="14sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gợi ý món ăn cho bạn"
+                            android:textColor="#216B35"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
 
-                    <TextView
-                        android:id="@+id/txtViewRecipe"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="12dp"
-                        android:text="Xem món →"
-                        android:textColor="#2E7D32"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Khám phá món ngon từ những thực phẩm đang có trong kho của bạn."
+                            android:textColor="#607D65"
+                            android:textSize="10sp"/>
+
+                    </LinearLayout>
+
+
+                    <!-- Ảnh minh họa món ăn -->
+
+                    <ImageView
+                        android:id="@+id/imgRecipe"
+                        android:layout_width="82dp"
+                        android:layout_height="76dp"
+                        android:layout_marginStart="8dp"
+                        android:background="#D1E9D3"
+                        android:scaleType="centerInside"
+                        android:contentDescription="Ảnh minh họa món ăn"
+                        />
 
                 </LinearLayout>
+
+
+                <!-- Nút xem gợi ý -->
+
+                <TextView
+                    android:id="@+id/txtViewRecipe"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#2E7D32"
+                    android:gravity="center"
+                    android:text="Xem gợi ý món ăn  ›"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================= -->
+        <!-- GIỮ ID CŨ ĐỂ TƯƠNG THÍCH JAVA -->
+        <!-- TẠM ẨN HAI THAO TÁC NHANH -->
+        <!-- ================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardScanBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardAddManual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
