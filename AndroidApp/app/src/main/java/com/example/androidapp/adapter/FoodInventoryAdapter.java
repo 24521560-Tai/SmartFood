@@ -104,7 +104,7 @@ public class FoodInventoryAdapter
 
             // Đường dẫn ảnh lưu trên Backend
             if (imageUrl.startsWith("/")) {
-                imageUrl = "http://10.230.138.34:5222" + imageUrl;
+                imageUrl = "http://20.39.193.144:5000" + imageUrl;
             }
 
             Glide.with(holder.itemView.getContext())

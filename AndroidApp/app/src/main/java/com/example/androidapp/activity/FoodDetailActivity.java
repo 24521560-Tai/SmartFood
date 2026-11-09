@@ -32,7 +32,7 @@ public class FoodDetailActivity extends AppCompatActivity {
     private Button btnEdit, btnDelete;
 
     private static final String IMAGE_BASE_URL =
-            "http://10.0.156.128:5222";
+            "http://20.39.193.144:5000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
