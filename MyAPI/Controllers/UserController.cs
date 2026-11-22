@@ -16,16 +16,18 @@ namespace MyAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly MyDBContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        private readonly PasswordHasher<User>
-            _passwordHasher;
+        private readonly PasswordHasher<User> _passwordHasher;
 
-        public UserController(MyDBContext context)
+        public UserController(
+            MyDBContext context,
+            IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
 
-            _passwordHasher =
-                new PasswordHasher<User>();
+            _passwordHasher = new PasswordHasher<User>();
         }
 
         // GET: api/User/me
@@ -89,10 +91,24 @@ namespace MyAPI.Controllers
                 );
             }
 
+            string? oldAvatar = user.Avatar;
+
             user.Username = request.Username;
             user.Avatar = request.Avatar;
 
             await _context.SaveChangesAsync();
+
+            // Chỉ xóa khi avatar thực sự thay đổi
+            if (oldAvatar != user.Avatar)
+            {
+                var webRoot = _environment.WebRootPath
+                    ?? Path.Combine(
+                        _environment.ContentRootPath,
+                        "wwwroot"
+                    );
+
+                DeleteOldAvatar(oldAvatar, webRoot);
+            }
 
             return Ok(new
             {
@@ -100,6 +116,174 @@ namespace MyAPI.Controllers
                 username = user.Username,
                 avatar = user.Avatar
             });
+        }
+
+        // POST: api/User/avatar
+        [HttpPost("avatar")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadAvatar(IFormFile image)
+        {
+            // 1. Lấy UserId từ JWT
+            var userIdClaim = User.FindFirst(
+                ClaimTypes.NameIdentifier
+            )?.Value;
+
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            // 2. Kiểm tra ảnh
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("Vui lòng chọn ảnh.");
+            }
+
+            // Giới hạn 5 MB
+            if (image.Length > 5 * 1024 * 1024)
+            {
+                return BadRequest("Ảnh không được vượt quá 5 MB.");
+            }
+
+            // 3. Kiểm tra định dạng
+            var allowedExtensions = new[]
+            {
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".webp"
+    };
+
+            var extension = Path.GetExtension(
+                image.FileName
+            ).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                return BadRequest("Định dạng ảnh không hợp lệ.");
+            }
+
+            // 4. Tìm người dùng
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound("Không tìm thấy tài khoản.");
+            }
+
+            // 5. Xác định thư mục lưu ảnh
+            var webRoot = _environment.WebRootPath
+                ?? Path.Combine(
+                    _environment.ContentRootPath,
+                    "wwwroot"
+                );
+
+            var folderPath = Path.Combine(
+                webRoot,
+                "uploads",
+                "avatars"
+            );
+
+            Directory.CreateDirectory(folderPath);
+
+            // 6. Tạo tên file ngẫu nhiên
+            var fileName = $"{Guid.NewGuid()}{extension}";
+
+            var filePath = Path.Combine(
+                folderPath,
+                fileName
+            );
+
+
+            // 7. Lấy đường dẫn avatar cũ
+            string? oldAvatar = user.Avatar;
+
+            // 8. Lưu ảnh mới và cập nhật database
+            try
+            {
+                await using var stream = new FileStream(
+                    filePath,
+                    FileMode.CreateNew
+                );
+
+                await image.CopyToAsync(stream);
+
+                // Cập nhật đường dẫn ảnh mới
+                user.Avatar = $"/uploads/avatars/{fileName}";
+
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                // Nếu lưu ảnh hoặc cập nhật database thất bại,
+                // xóa file ảnh mới đã tạo (nếu có).
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
+                throw;
+            }
+
+            // 9. Xóa ảnh upload cũ sau khi database đã cập nhật thành công
+            try
+            {
+                DeleteOldAvatar(oldAvatar, webRoot);
+            }
+            catch (IOException ex)
+            {
+                // Không xóa ảnh mới nếu việc xóa ảnh cũ thất bại.
+                // Ghi log nếu cần.
+            }
+
+            // 10. Trả kết quả
+            return Ok(new
+            {
+                message = "Cập nhật ảnh đại diện thành công.",
+                avatar = user.Avatar
+            });
+        }
+
+        private void DeleteOldAvatar(
+    string? oldAvatar,
+    string webRoot)
+        {
+            if (string.IsNullOrWhiteSpace(oldAvatar))
+            {
+                return;
+            }
+
+            // Chỉ xóa ảnh do người dùng upload
+            const string prefix = "/uploads/avatars/";
+
+            if (!oldAvatar.StartsWith(
+                    prefix,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            // Lấy tên file, không sử dụng đường dẫn tùy ý từ database
+            var fileName = oldAvatar.Substring(prefix.Length);
+
+            if (string.IsNullOrWhiteSpace(fileName) ||
+                fileName != Path.GetFileName(fileName))
+            {
+                return;
+            }
+
+            var filePath = Path.Combine(
+                webRoot,
+                "uploads",
+                "avatars",
+                fileName
+            );
+
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
         }
 
         [HttpPut("change-password")]

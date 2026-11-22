@@ -25,9 +25,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import android.content.Intent;
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 public class FoodInventoryFragment extends Fragment {
-
+    private ActivityResultLauncher<Intent> detailLauncher;
     private RecyclerView recyclerFoodItems;
     private FoodInventoryAdapter adapter;
 
@@ -35,6 +36,20 @@ public class FoodInventoryFragment extends Fragment {
             new ArrayList<>();
 
     public FoodInventoryFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        detailLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == android.app.Activity.RESULT_OK) {
+                        loadFoodItems();
+                    }
+                }
+        );
     }
 
     @Nullable
@@ -69,8 +84,9 @@ public class FoodInventoryFragment extends Fragment {
 
             intent.putExtra("food_id", food.getId());
 
-            startActivity(intent);
+            detailLauncher.launch(intent);
         });
+
         recyclerFoodItems.setAdapter(adapter);
 
         // 4. Lấy dữ liệu từ Backend

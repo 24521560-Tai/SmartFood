@@ -60,8 +60,18 @@ public class FoodInventoryAdapter
         holder.txtFoodName.setText(food.getName());
         holder.txtCategory.setText(food.getCategoryName());
 
+        double quantity = food.getQuantity();
+
+        String quantityText;
+
+        if (quantity == Math.floor(quantity)) {
+            quantityText = String.valueOf((long) quantity);
+        } else {
+            quantityText = String.valueOf(quantity);
+        }
+
         holder.txtQuantity.setText(
-                "Số lượng: " + food.getQuantity() + " " + food.getUnit()
+                "Số lượng: " + quantityText + " " + food.getUnit()
         );
 
         // Tính số ngày còn lại
@@ -104,7 +114,7 @@ public class FoodInventoryAdapter
 
             // Đường dẫn ảnh lưu trên Backend
             if (imageUrl.startsWith("/")) {
-                imageUrl = "http://20.39.193.144:5000" + imageUrl;
+                imageUrl = "http://10.0.188.113:5222" + imageUrl;
             }
 
             Glide.with(holder.itemView.getContext())

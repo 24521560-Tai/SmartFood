@@ -1,10 +1,14 @@
+
 package com.example.androidapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.androidapp.R;
 import com.example.androidapp.utils.TokenManager;
 
 public class SplashActivity extends AppCompatActivity {
@@ -13,29 +17,37 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TokenManager tokenManager =
-                new TokenManager(this);
+        // Hiển thị giao diện Splash
+        setContentView(R.layout.activity_splash);
 
-        Intent intent;
+        // Chờ 1,5 giây rồi chuyển màn hình
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-        if (tokenManager.hasToken()) {
+            TokenManager tokenManager =
+                    new TokenManager(this);
 
-            // Đã có JWT
-            intent = new Intent(
-                    SplashActivity.this,
-                    HomeActivity.class
-            );
+            Intent intent;
 
-        } else {
+            if (tokenManager.hasToken()) {
 
-            // Chưa đăng nhập
-            intent = new Intent(
-                    SplashActivity.this,
-                    LoginActivity.class
-            );
-        }
+                // Đã có JWT
+                intent = new Intent(
+                        SplashActivity.this,
+                        HomeActivity.class
+                );
 
-        startActivity(intent);
-        finish();
+            } else {
+
+                // Chưa đăng nhập
+                intent = new Intent(
+                        SplashActivity.this,
+                        LoginActivity.class
+                );
+            }
+
+            startActivity(intent);
+            finish();
+
+        }, 1500);
     }
 }

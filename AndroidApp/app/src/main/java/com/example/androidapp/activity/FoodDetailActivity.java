@@ -20,6 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import com.example.androidapp.R;
+import androidx.appcompat.app.AlertDialog;
 
 public class FoodDetailActivity extends AppCompatActivity {
 
@@ -30,7 +31,7 @@ public class FoodDetailActivity extends AppCompatActivity {
 
     private ImageButton btnBack;
     private Button btnEdit, btnDelete;
-
+    private int foodId;
     private static final String IMAGE_BASE_URL =
             "http://20.39.193.144:5000";
 
@@ -46,7 +47,8 @@ public class FoodDetailActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         // 3. Nhận ID thực phẩm từ Intent
-        int foodId = getIntent().getIntExtra("food_id", -1);
+        foodId = getIntent().getIntExtra("food_id", -1);
+        btnDelete.setOnClickListener(v -> showDeleteDialog());
 
         if (foodId == -1) {
             Toast.makeText(this,
@@ -214,5 +216,72 @@ public class FoodDetailActivity extends AppCompatActivity {
         } catch (Exception e) {
             return date;
         }
+    }
+    private void showDeleteDialog() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Xóa thực phẩm")
+                .setMessage("Bạn có chắc chắn muốn xóa thực phẩm này khỏi kho không?")
+                .setNegativeButton("Hủy", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    deleteFoodItem();
+                })
+                .show();
+    }
+
+    private void deleteFoodItem() {
+
+        btnDelete.setEnabled(false);
+
+        FoodInventoryApi api = ApiClient
+                .getRetrofit(this)
+                .create(FoodInventoryApi.class);
+
+        api.deleteFoodItem(foodId).enqueue(new Callback<Void>() {
+
+            @Override
+            public void onResponse(
+                    Call<Void> call,
+                    Response<Void> response) {
+
+                btnDelete.setEnabled(true);
+
+                if (response.isSuccessful()) {
+
+                    Toast.makeText(
+                            FoodDetailActivity.this,
+                            "Đã xóa thực phẩm",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    setResult(RESULT_OK);
+                    finish();
+
+                } else {
+
+                    Toast.makeText(
+                            FoodDetailActivity.this,
+                            "Không thể xóa thực phẩm. Mã lỗi: " + response.code(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(
+                    Call<Void> call,
+                    Throwable t) {
+
+                btnDelete.setEnabled(true);
+
+                Toast.makeText(
+                        FoodDetailActivity.this,
+                        "Lỗi kết nối: " + t.getMessage(),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
     }
 }

@@ -31,6 +31,23 @@ import com.example.androidapp.model.SetupProfileRequest;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.net.Uri;
+import android.content.ContentResolver;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+
+import com.bumptech.glide.Glide;
+import com.example.androidapp.model.AvatarUploadResponse;
 
 public class ProfileFragment extends Fragment {
 
@@ -57,6 +74,17 @@ public class ProfileFragment extends Fragment {
     private UserApi userApi;
     private TokenManager tokenManager;
 
+    private final ActivityResultLauncher<String> galleryLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.GetContent(),
+                    uri -> {
+
+                        if (uri != null) {
+                            uploadAvatar(uri);
+                        }
+
+                    }
+            );
 
     @Nullable
     @Override
@@ -391,7 +419,9 @@ public class ProfileFragment extends Fragment {
                 }
         );
     }
-
+    private void openGallery() {
+        galleryLauncher.launch("image/*");
+    }
     private void showAvatarDialog() {
 
         View dialogView = LayoutInflater
@@ -433,7 +463,8 @@ public class ProfileFragment extends Fragment {
         ImageView chili =
                 dialogView.findViewById(R.id.avatarChili);
 
-
+        View btnChooseGallery =
+                dialogView.findViewById(R.id.btnChooseGallery);
         // Danh sách avatar để tiện xử lý giao diện
         ImageView[] avatarViews = {
                 carrot,
@@ -452,7 +483,11 @@ public class ProfileFragment extends Fragment {
                 currentAvatar
         };
 
-
+        // Chọn ảnh từ thư viện
+        btnChooseGallery.setOnClickListener(v -> {
+            dialog.dismiss();
+            openGallery();
+        });
         // =========================
         // CLICK AVATAR
         // =========================
@@ -969,9 +1004,10 @@ public class ProfileFragment extends Fragment {
     // AVATAR
     // =====================================================
 
+
     private void setAvatar(String avatar) {
 
-        if (avatar == null) {
+        if (avatar == null || avatar.isEmpty()) {
 
             imgProfileAvatar.setImageResource(
                     R.drawable.avatar_carrot
@@ -980,6 +1016,26 @@ public class ProfileFragment extends Fragment {
             return;
         }
 
+        // Nếu avatar là ảnh đã upload lên server
+        if (avatar.startsWith("/uploads/avatars/")
+                || avatar.startsWith("http://")
+                || avatar.startsWith("https://")) {
+
+            String imageUrl = avatar.startsWith("http")
+                    ? avatar
+                    : ApiClient.BASE_URL + avatar.substring(1);
+
+            Glide.with(this)
+                    .load(imageUrl)
+                    .circleCrop()
+                    .placeholder(R.drawable.avatar_carrot)
+                    .error(R.drawable.avatar_carrot)
+                    .into(imgProfileAvatar);
+
+            return;
+        }
+
+        // Nếu là avatar có sẵn thì sử dụng drawable
         switch (avatar) {
 
             case "avatar_broccoli":
@@ -1034,6 +1090,7 @@ public class ProfileFragment extends Fragment {
     }
 
 
+
     // =====================================================
     // LOGOUT
     // =====================================================
@@ -1058,5 +1115,179 @@ public class ProfileFragment extends Fragment {
 
         startActivity(intent);
     }
+
+    private File createAvatarTempFile(Uri uri) throws Exception {
+
+        // 1. Lấy ContentResolver để đọc dữ liệu ảnh
+        ContentResolver resolver =
+                requireContext().getContentResolver();
+
+        // 2. Lấy định dạng MIME của ảnh
+        String mimeType = resolver.getType(uri);
+
+        if (mimeType == null ||
+                (!mimeType.equals("image/jpeg")
+                        && !mimeType.equals("image/png")
+                        && !mimeType.equals("image/webp"))) {
+
+            throw new Exception("Định dạng ảnh không được hỗ trợ.");
+        }
+
+        // 3. Tạo file tạm trong cache của ứng dụng
+        String extension;
+
+        if (mimeType.equals("image/png")) {
+            extension = ".png";
+        } else if (mimeType.equals("image/webp")) {
+            extension = ".webp";
+        } else {
+            extension = ".jpg";
+        }
+
+        File tempFile = File.createTempFile(
+                "avatar_",
+                extension,
+                requireContext().getCacheDir()
+        );
+
+        // 4. Đọc ảnh từ Uri và ghi vào file tạm
+        try (
+                InputStream inputStream =
+                        resolver.openInputStream(uri);
+
+                FileOutputStream outputStream =
+                        new FileOutputStream(tempFile)
+        ) {
+            if (inputStream == null) {
+                throw new Exception("Không thể đọc ảnh đã chọn.");
+            }
+
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            long totalBytes = 0;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+
+                totalBytes += bytesRead;
+
+                // Giới hạn dung lượng 5 MB
+                if (totalBytes > 5 * 1024 * 1024) {
+                    throw new Exception("Ảnh không được vượt quá 5 MB.");
+                }
+
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (Exception e) {
+
+            // Xóa file tạm nếu quá trình đọc ảnh thất bại
+            if (tempFile.exists()) {
+                tempFile.delete();
+            }
+
+            throw e;
+        }
+
+        return tempFile;
+    }
+
+
+    private void uploadAvatar(Uri uri) {
+
+        try {
+            // Tạo file tạm từ ảnh được chọn
+            File tempFile = createAvatarTempFile(uri);
+
+            // Gửi file lên API
+            uploadAvatarFile(uri, tempFile);
+
+        } catch (Exception e) {
+
+            if (!isAdded()) return;
+
+            Toast.makeText(
+                    requireContext(),
+                    e.getMessage(),
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+    }
+
+
+    private void uploadAvatarFile(Uri uri, File tempFile) {
+
+        String mimeType = requireContext()
+                .getContentResolver()
+                .getType(uri);
+
+        RequestBody requestBody = RequestBody.create(
+                tempFile,
+                MediaType.parse(mimeType)
+        );
+
+        MultipartBody.Part imagePart =
+                MultipartBody.Part.createFormData(
+                        "image",
+                        tempFile.getName(),
+                        requestBody
+                );
+
+        userApi.uploadAvatar(imagePart).enqueue(
+                new retrofit2.Callback<AvatarUploadResponse>() {
+
+                    @Override
+                    public void onResponse(
+                            retrofit2.Call<AvatarUploadResponse> call,
+                            retrofit2.Response<AvatarUploadResponse> response) {
+
+                        if (tempFile.exists()) {
+                            tempFile.delete();
+                        }
+
+                        if (!isAdded()) return;
+
+                        if (response.isSuccessful()
+                                && response.body() != null) {
+
+                            currentAvatar = response.body().getAvatar();
+
+                            setAvatar(currentAvatar);
+
+                            Toast.makeText(
+                                    requireContext(),
+                                    "Cập nhật ảnh đại diện thành công!",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                        } else {
+                            Toast.makeText(
+                                    requireContext(),
+                                    "Upload thất bại: HTTP " + response.code(),
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            retrofit2.Call<AvatarUploadResponse> call,
+                            Throwable t) {
+
+                        if (tempFile.exists()) {
+                            tempFile.delete();
+                        }
+
+                        if (!isAdded()) return;
+
+                        Toast.makeText(
+                                requireContext(),
+                                "Lỗi kết nối: " + t.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
+    }
+
+
 
 }

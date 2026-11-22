@@ -394,7 +394,8 @@
                         android:layout_height="76dp"
                         android:layout_marginStart="8dp"
                         android:background="#D1E9D3"
-                        android:scaleType="centerInside"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/food_decor"
                         android:contentDescription="Ảnh minh họa món ăn"
                         />
 

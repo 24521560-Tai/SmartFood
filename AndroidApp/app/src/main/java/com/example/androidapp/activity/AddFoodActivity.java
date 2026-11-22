@@ -94,7 +94,8 @@ public class AddFoodActivity extends AppCompatActivity {
             "Đồ uống",
             "Đồ khô",
             "Gia vị",
-            "Bánh kẹo"
+            "Bánh kẹo",
+            "Khác"
     };
 
     private final String[] units = {
@@ -107,7 +108,9 @@ public class AddFoodActivity extends AppCompatActivity {
             "Kg",
             "Gram",
             "Lít",
-            "ml"
+            "ml",
+            "Con",
+            "Bó"
     };
 
 
@@ -644,75 +647,83 @@ public class AddFoodActivity extends AppCompatActivity {
     private MultipartBody.Part createImagePart(Uri uri)
             throws Exception {
 
-        ContentResolver resolver =
-                getContentResolver();
+        ContentResolver resolver = getContentResolver();
 
-        String fileName =
-                getFileName(uri);
+        String fileName = getFileName(uri);
 
-        if (fileName == null
-                || fileName.trim().isEmpty()) {
-
-            fileName =
-                    "food_" +
-                            System.currentTimeMillis() +
-                            ".jpg";
+        if (fileName == null || fileName.trim().isEmpty()) {
+            fileName = "food_" + System.currentTimeMillis() + ".jpg";
         }
 
+        String extension = ".jpg";
 
-        File tempFile =
-                new File(
-                        getCacheDir(),
-                        fileName
-                );
+        int dotIndex = fileName.lastIndexOf(".");
+        if (dotIndex >= 0) {
+            extension = fileName.substring(dotIndex);
+        }
 
+        File tempFile = File.createTempFile(
+                "food_",
+                extension,
+                getCacheDir()
+        );
+
+        long totalBytes = 0;
 
         try (
-                InputStream inputStream =
-                        resolver.openInputStream(uri);
-
-                FileOutputStream outputStream =
-                        new FileOutputStream(tempFile)
+                InputStream inputStream = resolver.openInputStream(uri);
+                FileOutputStream outputStream = new FileOutputStream(tempFile)
         ) {
 
             if (inputStream == null) {
-                throw new Exception(
-                        "Không thể mở ảnh"
-                );
+                throw new Exception("Không thể mở ảnh từ URI: " + uri);
             }
 
-
-            byte[] buffer =
-                    new byte[8192];
+            byte[] buffer = new byte[8192];
 
             int length;
 
-            while ((length =
-                    inputStream.read(buffer)) > 0) {
+            while ((length = inputStream.read(buffer)) != -1) {
 
-                outputStream.write(
-                        buffer,
-                        0,
-                        length
-                );
+                if (length == 0) {
+                    continue;
+                }
+
+                outputStream.write(buffer, 0, length);
+
+                totalBytes += length;
             }
+
+            outputStream.flush();
         }
 
+        // Kiểm tra file sau khi sao chép
+        android.util.Log.d("IMAGE_UPLOAD",
+                "URI: " + uri);
 
-        String mimeType =
-                resolver.getType(uri);
+        android.util.Log.d("IMAGE_UPLOAD",
+                "Temp file: " + tempFile.getAbsolutePath());
+
+        android.util.Log.d("IMAGE_UPLOAD",
+                "Bytes copied: " + totalBytes);
+
+        android.util.Log.d("IMAGE_UPLOAD",
+                "File length: " + tempFile.length());
+
+        if (totalBytes <= 0 || tempFile.length() <= 0) {
+            throw new Exception("Ảnh rỗng, không thể upload!");
+        }
+
+        String mimeType = resolver.getType(uri);
 
         if (mimeType == null) {
             mimeType = "image/jpeg";
         }
 
-
-        RequestBody imageBody =
-                RequestBody.create(
-                        tempFile,
-                        MediaType.parse(mimeType)
-                );
-
+        RequestBody imageBody = RequestBody.create(
+                tempFile,
+                MediaType.parse(mimeType)
+        );
 
         return MultipartBody.Part.createFormData(
                 "Image",

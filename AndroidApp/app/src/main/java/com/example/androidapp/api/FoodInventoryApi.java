@@ -6,7 +6,8 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-
+import retrofit2.http.DELETE;
+import retrofit2.http.Path;
 public interface FoodInventoryApi {
 
     @GET("api/FoodItems")
@@ -14,4 +15,7 @@ public interface FoodInventoryApi {
 
     @GET("api/FoodItems/{id}")
     Call<FoodItemResponse> getFoodItemById(@Path("id") int id);
+
+    @DELETE("api/FoodItems/{id}")
+    Call<Void> deleteFoodItem(@Path("id") int id);
 }

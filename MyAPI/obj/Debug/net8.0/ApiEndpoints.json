@@ -225,6 +225,22 @@
   },
   {
     "ContainingType": "MyAPI.Controllers.UserController",
+    "Method": "UploadAvatar",
+    "RelativePath": "api/User/avatar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyAPI.Controllers.UserController",
     "Method": "ChangePassword",
     "RelativePath": "api/User/change-password",
     "HttpMethod": "PUT",
